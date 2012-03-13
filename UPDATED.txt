@@ -1,0 +1,3 @@
+* advanced mode (proxy setting)
+* make description works
+

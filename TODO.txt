@@ -1,0 +1,5 @@
+* advanced mode (proxy setting)
+* sina weibo update error.
+* seems that in_reply_to doesn't work.
+
+

@@ -1,0 +1,15 @@
+{
+    "name": "kwestion",
+    "version": "1.0",
+    "description": "kwestion for chrome",
+    "app": {
+        "launch": {
+            "local_path": "index.html"
+        }
+    },
+    "icons": {
+        "128": "kwestion128.png"
+    },
+    "permissions": ["<all_urls>", "unlimitedStorage", "notifications", "tabs"]
+}
+

@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>kwestion</title>
+		<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="jquery.tmpl.min.js"></script>
+		<script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="jquery.oauth.js"></script>
+		<script type="text/javascript" src="lib.class.js"></script>
+		<script type="text/javascript" src="kcore.js"></script>
+		<script type="text/javascript" src="oauth.js"></script>
+		<script type="text/javascript" src="sha1.js"></script>
+		<script type="text/javascript" src="lib.class.js"></script>
+		<script type="text/javascript" src="lib.oauthrequest.js"></script>
+		<script type="text/javascript" src="lib.functions.js"></script>
+		<script type="text/javascript" src="lib.plugin.js"></script>
+		<script type="text/javascript" src="lib.twitter.js"></script>
+		<script type="text/javascript" src="lib.weibo.js"></script>
+		<script type="text/javascript" src="ui.msg.send.js"></script>
+		<script type="text/javascript" src="ui.proxysetting.js"></script>
+		<script type="text/javascript" src="ui.hover.js"></script>
+		<script type="text/javascript" src="ui.toolbar.js"></script>
+		<script type="text/javascript" src="ui.profile.js"></script>
+		<script type="text/javascript" src="ui.frame.js"></script>
+		<script type="text/javascript" src="ui.notification.js"></script>
+		<script type="text/javascript" src="kwestion_plugins.js"></script>
+		<script type="text/javascript" src="main.js"></script>
+		<link rel="stylesheet" href="kwestion.css" />
+		<link rel="stylesheet" href="kmenu.css" />
+	</head>
+	<body>
+		<div id='people_op'>
+			<a href='#' class="openhome">Home</a>
+			<br />
+			<a href='#' class="atsomebody">Message</a>
+			<br />
+			<a href='#' class="dmsomebody">DM</a>
+			<br />
+			<a href='#' class="totextbox">to Textbox</a>
+		</div>
+		<div id='peopleat_op'>
+			<a href='#' class="openhome">Home</a> | <a href='#' class="atsomebody">Message</a> | <a href='#' class="dmsomebody">DM</a> | <a href='#' class="totextbox">to Textbox</a>
+		</div>
+		<div id='hash_op'>
+			<a href='#' class="openhashtag">Open Hashtag</a> | <a href='#' class="hashtotextbox">to Textbox</a>
+		</div>
+		<div id='kwestionheader' class='clear'>
+			<div id='myinfo' class='clear'>
+				<em>Click <a href="#" onclick="logout();">HERE</a> to clean ALL CONFIGUATIONS if you cannot load page contents(Be careful !!!).</em>
+			</div>
+			<div id='postform' class='clear'>
+				<textarea id="message" style='width:50%; border:1px solid #989070;display:block;float:left;'></textarea>
+				<div class="clear" style="display:block; float:left; width:48%; padding: 0 0 0 2px;">
+					(<span id='wordcount'>140</span>) <a id="sendmessage" title="Press Ctrl+Enter to Send" href='#' onclick='return false;'>Send</a> or <a id='dosearch' href='#' onclick="return false;">Search</a>
+				</div>
+			</div>
+		</div>
+		<div id="framework" class="clear"></div>
+	</body>
+	<script type="text/html" id="k-item-template">
+		<div class="item">${value}</div>
+	</script>
+	<script type="text/html" id="timeline-template">
+		<table class="twitter-item{{if user && user.screen_name == myname}} me{{/if}}" cellpadding="0">
+			<tr>
+				<td class="avatar people_op" rowspan="2"><img src="${user.profile_image_url}" alt="${user.screen_name}" tid="${id}" /></td>
+				<td class="screen_name"><a title="${user.name}">${user.screen_name}</a>
+					{{if geo}}<a href="#" long="${geo.coordinates[1]}" lat="${geo.coordinates[0]}" onclick="smallmap(this); return false;"><img src="geo.png" /></a>{{/if}}
+				</td>
+				<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+			</tr>
+			<tr>
+				<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}</td>
+			</tr>
+		</table>
+	</script>
+	<script type="text/html" id="timeline-template-dm">
+		<table class="twitter-item" cellpadding="0">
+			<tr>
+				<td class="avatar people_op" rowspan="2"><img src="${sender.profile_image_url}" alt="${sender.screen_name}" tid="${id}" /></td>
+				<td class="screen_name"><a title="${sender.name}">${sender.screen_name}</a></td>
+				<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+			</tr>
+			<tr>
+				<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}</td>
+			</tr>
+		</table>
+	</script>
+	<script type="text/html" id="timeline-template-sina">
+		<table class="twitter-item{{if user && user.screen_name == myname}} me{{/if}}" cellpadding="0">
+			<tr>
+				<td class="avatar people_op" rowspan="2" style="border-left:#ff0000 solid 5px;"><img src="${user.profile_image_url}" alt="${user.screen_name}" tid="${id}" /></td>
+				<td class="screen_name"><a title="${user.name}">${user.screen_name}</a></td>
+				<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+			</tr>
+			<tr>
+				<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}
+					{{if retweeted_status}}
+					<div style="border:1px dotted black; margin:2px; padding:2px">
+						<img src="${retweeted_status.user.profile_image_url}" height="24" width="24">${retweeted_status.user.screen_name}:
+						{{html retweeted_status.text}}</div>
+					{{/if}}
+				</td>
+			</tr>
+		</table>
+	</script>
+	<script type="text/html" id="toolbar-sina">
+		<ul class="dropdown">
+			<li>
+			<a href="#" title="Reply. Press Ctrl to reply to all." class="reply">Reply</a>
+			<ul class="sub_menu">
+				<li><a href="#" class="reply">Single</a></li>
+				<li><a href="#" class="reply multiple">Multiple</a></li>
+			</ul>
+			</li>
+			<li>
+			<a href="#" class="retweet">RT</a>
+			</li>
+			<li class="dm">
+			<a href="#" class="dm">DM</a>
+			</li>
+			<li class="inreplyto" style="display:none;">
+			<a href="#" class="showthread">In reply to</a>
+			</li>
+			<li>
+			<a href="#">Other</a>
+			<ul class="sub_menu">
+				<li class="del" style="display:none;"><a href="#" class="del">Delete</a></li>
+				<li><a href="#" class="fav">Favorite</a></li>
+			</ul>
+			</li>
+		</ul>
+	</script>
+	<script type="text/html" id="timeline-template-follower">
+		<table class="twitter-item" cellpadding="0">
+			<tr>
+				<td class="avatar people_op" rowspan="2"><img src="${profile_image_url}" alt="${screen_name}" tid="${id}" /></td>
+				<td class="screen_name"><a title="${name}">${screen_name}</a></td>
+				<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+			</tr>
+			<tr>
+				<td class="content" colspan="2">
+					<div>Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+					${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button" onclick="opentab('who fo ${screen_name}', 'follower', '${screen_name}', 'follower', frame.items.length - 1); return false;">${followers_count}</a> follower. He/she is following<a href="#" class="button" onclick="opentab('${screen_name} fo who', 'following', '${screen_name}', 'following', frame.items.length - 1); return false;">${friends_count}</a>people. His/Her URL is <a href="${url}" target="_blank">${url}</a></td>
+			</tr>
+		</table>
+	</script>
+	<script type="text/html" id="timeline-template-following">
+		<table class="twitter-item" cellpadding="0">
+			<tr>
+				<td class="avatar people_op" rowspan="2"><img src="${profile_image_url}" alt="${screen_name}" tid="${id}" /></td>
+				<td class="screen_name"><a title="${name}">${screen_name}</a></td>
+				<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+			</tr>
+			<tr>
+				<td class="content" colspan="2">
+					<div>Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+					${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button" onclick="opentab('who fo ${screen_name}', 'follower', '${screen_name}', 'follower', frame.items.length - 1); return false;">${followers_count}</a> follower. He/she is following<a href="#" class="button" onclick="opentab('${screen_name} fo who', 'following', '${screen_name}', 'following', frame.items.length - 1); return false;">${friends_count}</a>people. His/Her URL is <a href="${url}" target="_blank">${url}</a></td>
+			</tr>
+		</table>
+	</script>
+	<script type="text/html" id="userinfo">
+		{{if screen_name!=myname}}
+		<div><a href='#' class='button' onclick='follow(this,"${screen_name}"); return false;'>{{if following}}Unfollow{{else}}Follow{{/if}}</a> Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+		{{/if}}
+		<div>Bio: ${description}</div>
+		<div>${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button" onclick="opentab('who fo ${screen_name}', 'follower', '${screen_name}', 'follower', frame.items.length - 1); return false;">${followers_count}</a> follower. He/she is following<a href="#" class="button" onclick="opentab('${screen_name} fo who', 'following', '${screen_name}', 'following', frame.items.length - 1); return false;">${friends_count}</a>people. His/Her URL is <a href="${url}" target="_blank">${url}</a></div>
+	</script>
+	<script type="text/html" id="headbar">
+		<a href="http://code.google.com/p/kwestion/" target="_blank"><img src="kwestion_link.png" /></a>
+		<a href="#" onclick="setprofile(this);return false;">${myname}</a>
+		<em>${statuses_count}</em>
+		<span onclick="toolbarcollapse(this); return false;" id="toolbarcollapse">{{if storage.toolbarcollapse=='yes'}}&raquo;{{else}}&laquo;{{/if}}</span>
+		<span {{if storage.toolbarcollapse=='yes'}}class="toolbar_collapse"{{/if}}>
+			<a href="#" onclick="opentab('who fo you', 'follower', '${myname}', 'follower', frame.items.length - 1); return false;">Follower</a><em>${followers_count}</em>
+			<a href="#" onclick="opentab('you fo who', 'following', '${myname}', 'following', frame.items.length - 1); return false;">Following</a><em>${friends_count}</em>
+		</span>
+		{{if window.webkitNotifications}}<a href="#" style="color:#ffff00;" onclick="requestnotify();return false;">SetNotify</a> {{/if}}
+		<a href="#" onclick="loadsetting(this); return false;" id="loadsettingbutton">Options</a> <a href="#" onclick="logout();">Logout</a>
+		<input type="range" id="columncount" min="1" max="5" onchange="frame.setColumnCount(this.value);KframeResize();" value="${window.localStorage.columncount}"/>
+	</script>
+	<script type="text/html" id="ext-edit">
+		<div class="clear" style="margin:3px;">
+			<div class="clear" style="text-align:center;">
+				<textarea id="ext-editbox" class="msginputbox" style="height:80px;">${text}</textarea>
+			</div>
+			<div style="padding:5px;">
+				(<span id="ext-editboxcount"></span>)
+				<a href="#" class="a_button" id="ext-sendmsg">Send</a> or
+				<a href="#" class="a_button" id="ext-dosearch">Search</a>
+			</div>
+			<div id='kwestion_tools'>Useful URLs:
+				<a href='http://www.flickr.com/' target='_blank'>flickr</a> |
+				<a href='http://twitpic.com/' target='_blank'>twitpic</a> |
+				<a href='http://tweetphoto.com/' target='_blank'>tweetphoto</a> |
+				<a href='http://img.ly/' target='_blank'>img.ly</a>
+			</div>
+
+		</div>
+	</script>
+	<script type="text/html" id="rtdialog">
+		<div class="clear" style="margin:3px;">
+			<div class="clear" style="text-align:center;">
+				<textarea id="rtmsg" class="msginputbox" style="width:300px;height:100px;"></textarea>
+			</div>
+			<div style="padding:5px;">
+				(<span id="rtmsgcount"></span>)
+				<a href="#" class="a_button" id="rtbutton">Classic Retweet</a> or
+				<a href="#" class="a_button" id="ortbutton">Official Retweet</a>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="threads">
+		<div class="clear" style="border:1px dotted #ccc;{{if bold}}font-weight:bold;{{/if}}">
+			<img class="people_op" width="24" height="24" alt="${from.screen_name}" src="${from.profile_image_url}" />
+			${from.screen_name}: {{html parsetext(text)}}
+		</div>
+	</script>
+	<script type="text/html" id="changeprofile">
+		<div class="clear" style="padding:5px;">
+			Bio: <br />
+			<textarea style="border:1px solid #cccccc; width:280px; height:50px;" id="setdescriptionval">${bio}</textarea><br /><a href="#" onclick="setdescription(); return false;">Change</a>
+		</div>
+	</script>
+	<script type="text/html" id="toolbar-twitter">
+		<ul class="dropdown">
+			<li>
+			<a href="#" title="Reply. Press Ctrl to reply to all." class="reply">Reply</a>
+			<ul class="sub_menu">
+				<li><a href="#" class="reply">Single</a></li>
+				<li><a href="#" class="reply multiple">Multiple</a></li>
+			</ul>
+			</li>
+			<li>
+			<a href="#" class="retweet">RT</a>
+			</li>
+			<li class="dm">
+			<a href="#" class="dm">DM</a>
+			</li>
+			<li class="inreplyto" style="display:none;">
+			<a href="#" class="showthread">In reply to</a>
+			</li>
+			<li>
+			<a href="#">Other</a>
+			<ul class="sub_menu">
+				<li class="del" style="display:none;"><a href="#" class="del">Delete</a></li>
+				<li><a href="#" class="fav">Favorite</a></li>
+			</ul>
+			</li>
+		</ul>
+	</script>
+	<script type="text/html" id="toolbar-dm">
+		<ul class="dropdown">
+			<li class="dm"><a href="#" class="dm">DM</a></li>
+			<li class="del"><a href="#" class='del'>Delete</a></li>
+		</ul>
+	</script>
+	<script type="text/html" id="toolbar-userlist">
+		<ul class="dropdown">
+			<li class="follow"><a href="#" class="follow">Follow</a></li>
+			<li class="block"><a href="#" class="block">Block</a></li>
+		</ul>
+	</script>
+	<script type="text/html" id="rtdialog">
+		<div class="clear" style="margin:3px;">
+			<div class="clear" style="text-align:center;">
+				<textarea id="rtmsg" class="msginputbox" style="width:300px;height:100px;"></textarea>
+			</div>
+			<div style="padding:5px;">
+				(<span id="rtmsgcount"></span>)
+				<a href="#" class="a_button" id="rtbutton">Classic Retweet</a> or
+				<a href="#" class="a_button" id="ortbutton">Official Retweet</a>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="threads">
+		<div class="clear" style="border:1px dotted #ccc;{{if bold}}font-weight:bold;{{/if}}">
+			<img class="people_op" width="24" height="24" alt="${from.screen_name}" src="${from.profile_image_url}" />
+			${from.screen_name}: {{html parsetext(text)}}
+		</div>
+	</script>
+	<script type="text/html" id="pinlogin">
+		<div class="pinlogin clear">
+			<p>
+			<b>kwestion</b>
+			</p>
+			<p><b>Step 0</b>. If twitter is banned in your area, click <a href='#' onclick="initproxysetting($(this).parent().next()); return false;">here</a> to set a proxy:</p>
+			<div></div>
+			<p><b>Step 1</b>. Click <a href='#' class="gettwitterpin">here</a> to get a PIN code.</p>
+			<p><b>Step 2</b>. Input your PIN code for <b>${name}</b> </p>
+			<input type="text" id="pinvalue" value="" /> <a href="#" id="sendping">Use this Pin</a>
+		</div>
+	</script>
+
+	<script type="text/html" id="sinapinlogin">
+		<div class="pinlogin clear">
+			<p><b>Step 1</b>. Click <a href='#' class="gettwitterpin">here</a> to get a PIN code.</p>
+			<p><b>Step 2</b>. Input your PIN code for <b>${name}</b> </p>
+			<input type="text" id="pinvalue" value="" /> <a href="#" id="sendping">Use this Pin</a>
+		</div>
+	</script>
+
+
+	<script type="text/html" id="proxysetting">
+		<table>
+			<tr><td>API Proxy</td><td><input type="text" value="" id="apiproxy" /></td><td><a title='e.g. https://api.twitter.com/1/'>?</a></td></tr>
+			<tr><td>Search API Proxy</td><td><input type="text" value="" id="searchapiproxy" /></td><td><a title='e.g. http://search.twitter.com/'>?</a></td></tr>
+			<tr><td>OAuth Proxy</td><td><input type="text" value="" id="oauthproxy" /></td><td><a title='e.g. https://twitter.com/oauth/'>?</a></td></tr>
+			<tr><td>Use Proxy</td><td><input type="checkbox" value="true" id="useproxy" /></td><td>&nbsp;</td></tr>
+			<tr><td colspan="3"><a href="#" id="saveproxysetting">Save</a></td></tr>
+		</table>
+	</script>
+
+</html>
