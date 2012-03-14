@@ -100,7 +100,7 @@ var TTimeline = TwitterTimelineBase.extend({
       var data = rawdata;
       $.each(data, function(a, b) {
         fix32(b);
-        b.type = root.action;
+        b.type = root.type;
         if(b.text)
           b.processedtext = b.text;
         if(b.source)

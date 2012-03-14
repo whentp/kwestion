@@ -417,12 +417,12 @@ var KFramework = Class.extend({
         name : 'Home',
         user : '',
         action : 'home',
-        type : 'default',
+        type : 'home',
       }], [{
         name : 'Reply',
         user : 'whentp',
         action : 'reply',
-        type : 'default',
+        type : 'reply',
       }], [{
         name : 'DM',
         user : '',

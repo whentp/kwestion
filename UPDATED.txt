@@ -1,3 +1,6 @@
 * advanced mode (proxy setting)
 * make description works
-
+* modify .action => .type
+* add some mixin timelines
+* support view weibo reply & comment
+* clear some settings when click logout

@@ -338,6 +338,10 @@ function parsetext(raw) {
 
 function logout() {
   setConfig('oauthstr', '');
+  storage.frameworkParameters = '';
+  storage['kwestion-config-notify'] = "";
+  storage['kwestion-config-oauthstr'] = "";
+  storage['kwestion-config-sinaoauthstr'] = "";
   location.reload();
 }
 

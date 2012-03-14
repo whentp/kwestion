@@ -188,22 +188,53 @@ k_plugins.sinahometimeline = {
     $("#startweibobutton").click(root.start);
   },
   start : function() {
-    if(window.sinaweibointerval) {
+    if(window.sinaweibohomeinterval) {
       alert('already start.');
     } else {
       var sinaweibotimeline = new WTimeline({
         name : 'sinahome',
-        action : 'sina',
+        action : 'sinahome',
         type : 'sina',
         'user' : ''
       });
       sinaweibotimeline.renderTo = frame.findTimeline('home');
       sinaweibotimeline.check();
-      window.sinaweibointerval = setInterval(function() {
+      window.sinaweibohomeinterval = setInterval(function() {
         sinaweibotimeline.working = false;
         sinaweibotimeline.check();
       }, 60000);
-      //alert('OK.');
+    }
+    if(window.sinaweiboreplyinterval) {
+      alert('already start.');
+    } else {
+      var sinaweiboreplytimeline = new WTimeline({
+        name : 'sinareply',
+        action : 'sinareply',
+        type : 'sina',
+        'user' : ''
+      });
+      sinaweiboreplytimeline.renderTo = frame.findTimeline('reply');
+      sinaweiboreplytimeline.check();
+      window.sinaweiboreplyinterval = setInterval(function() {
+        sinaweiboreplytimeline.working = false;
+        sinaweiboreplytimeline.check();
+      }, 124000);
+    }
+    if(window.sinaweibo_comment_interval) {
+      alert('already start.');
+    } else {
+      var sinaweibo_comment_timeline = new WTimeline({
+        name : 'sinacomment',
+        action : 'comment',
+        type : 'sina',
+        'user' : ''
+      });
+      sinaweibo_comment_timeline.renderTo = frame.findTimeline('reply');
+      sinaweibo_comment_timeline.check();
+      window.sinaweibo_comment_interval = setInterval(function() {
+        sinaweibo_comment_timeline.working = false;
+        sinaweibo_comment_timeline.check();
+      }, 123000);
     }
   },
   pageload : function() {

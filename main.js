@@ -4,6 +4,9 @@ var frame;
 var kreq;
 var tltype = {
   'default' : TTimeline,
+  home : TTimeline,
+  reply : TTimeline,
+  dm : TTimeline,
   user : UserTTimeline,
   hash : HashTTimeline,
   follower : UserlistTTimeline,

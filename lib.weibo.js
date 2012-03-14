@@ -3,6 +3,7 @@
 
 var WTimeline = Timeline.extend({
   init : function(param) {
+  var root = this;
     this.name = param.name;
     this.action = param.action;
     this.user = param.user;
@@ -12,6 +13,21 @@ var WTimeline = Timeline.extend({
     this.working = false;
     this.type = param.type;
     this.renderTo = null;
+
+ this.urls = {
+      'sinahome' : 'http://api.t.sina.com.cn/statuses/home_timeline.json',
+      'sinareply' : 'http://api.t.sina.com.cn/statuses/mentions.json',
+      'dm' : 'http://api.t.sina.com.cn/direct_messages.json?',
+      'sinauser' : 'http://api.t.sina.com.cn/statuses/user_timeline.json?screen_name=' + root.user + '&',
+      'following' : 'http://api.t.sina.com.cn/statuses/friends/' + root.user + '.json',
+      'follower' : 'http://api.t.sina.com.cn/statuses/followers/' + root.user + '.json',
+      'fav' : 'http://api.t.sina.com.cn/favorites/' + root.user + '.json',
+      'rtbyme' : "http://api.t.sina.com.cn/statuses/retweeted_by_me.json",
+      'rttome' : "http://api.t.sina.com.cn/statuses/retweeted_to_me.json",
+      'rtofme' : "http://api.t.sina.com.cn/statuses/retweets_of_me.json",
+      'comment' : 'http://api.t.sina.com.cn/statuses/comments_timeline.json'
+    };
+
     if(param.canclose)
       this.canclose = param.canclose;
   },
@@ -36,14 +52,14 @@ var WTimeline = Timeline.extend({
     }
     root.working = true;
     ksinareq.ajax({
-      url : 'http://api.t.sina.com.cn/statuses/home_timeline.json',
+      url : root.urls[root.action],//'http://api.t.sina.com.cn/statuses/home_timeline.json',
       data : params
     }).success(function(rawdata) {
       root.working = false;
       var data = rawdata;
       $.each(data, function(a, b) {
         fix32(b);
-        b.type = root.action;
+        b.type = root.type;
         if(b.source)
           b.source = shortsource(b.source);
         b.processedtext = b.text;

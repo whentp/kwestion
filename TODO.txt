@@ -1,5 +1,7 @@
 * advanced mode (proxy setting)
 * sina weibo update error.
 * seems that in_reply_to doesn't work.
-
+* implement a function, i.e. clear frameworkparameters in localstorage when updating
+* move the sina weibo from kwestion_plugins.js to an independent file.
+* add logout weibo in options.
 
