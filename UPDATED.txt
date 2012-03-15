@@ -1,3 +1,8 @@
+
+14:58 2012/3/15
+* fix some bugs on setting current_timeline
+* fix some bugs on setting klcontainer.
+----------------------------------
 * advanced mode (proxy setting)
 * make description works
 * modify .action => .type

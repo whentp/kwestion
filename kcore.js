@@ -13,20 +13,6 @@ var KList = Class.extend({
     this.end = root.container.find("div.k-list-item-wrap");
     elem.append(root.container);
   },
-  /*getListParameters: function(){
-   if(this.list){
-   console.log('type', this.list.type);
-   return {
-   name: this.list.name,
-   action: this.list.action,
-   type: this.list.type,
-   user: this.list.user,
-   canclose: this.list.canclose
-   };
-   }else{
-   return null;
-   }
-   },*/
   wrapElement : function(selector) {
     return $(selector).wrap('<div class="k-list-item-wrap"></div>').parent();
   },
@@ -140,10 +126,10 @@ var KTab = Class.extend({
   },
   addList : function(tl, activiate) {
     /*
-     * data is a dict {name, list, canclose, render}
-     * name is a string.
-     * list must contain xxxxxxx
-     * */
+    * data is a dict {name, list, canclose, render}
+    * name is a string.
+    * list must contain xxxxxxx
+    * */
     var root = this;
     //console.log('addlist',tl)
     var tmpelem = $("<li class='k-tab-header-item'>" + tl.name + "<a href='#' class='k-tab-header-close' " + ((tl.canclose ? '' : "style='display:none;'") + ">x</a></li>"));
@@ -203,7 +189,7 @@ var KTab = Class.extend({
     }
     tmp.detach().remove();
     if(tl && tl.destroy) {
-      root.current_timeline = null;
+      if(root.current_timeline == tl) root.current_timeline = null;
       tl.klcontainer = null;
       root.items.remove(tl);
       tl.destroy();
@@ -222,8 +208,6 @@ var KTab = Class.extend({
     var refresh = false;
     //console.log('before', tl);
     if(root.current_timeline != tl) {
-      if(root.current_timeline)
-        root.current_timeline.klcontainer = null;
       refresh = true;
     }
     if(tl.showPanel) {
@@ -234,9 +218,10 @@ var KTab = Class.extend({
     container.find('.k-tab-header-item-focused').removeClass('k-tab-header-item-focused');
     obj.addClass('k-tab-header-item-focused');
     root.list.list = null;
+    if(root.current_timeline)
+      root.current_timeline.klcontainer = null;
     tl.setListContainer(root.list);
     root.current_timeline = tl;
-    tl.klcontainer = root.list;
     if(refresh) {
       root.list.clear();
       if(tl.showExtra)
@@ -297,14 +282,11 @@ var KFramework = Class.extend({
     this.items = [];
   },
   getParameters : function() {
-    //console.log(thi);
     return $.map(this.items, function(x) {
-      //console.log(x.getParameters());
       return [x.getParameters()];
     });
   },
   setColumnCount : function(count) {
-    // attention that this function returns the actural count.
     var root = this;
     this.container.empty();
     var sb = [];
@@ -319,15 +301,10 @@ var KFramework = Class.extend({
     this.container.html(sb.join(''));
     var tmpw = Math.floor($(window).width() / count);
     var tmph = Math.floor($(window).height() - 10);
-    //-$('#kwestionheader').height()-$('#footer').height()-4);
     if(this.newcss) {
       this.newcss.detach().remove();
     }
-    //this.newcss = $("<style type='text/css'> .constraint .k-list{height: " + (tmph - 56) + "px; } </style>")
-    //this.newcss.appendTo("head");
-
     var olditems = this.items;
-
     this.items = [];
     this.container.find('.panel').addClass('constraint').width(tmpw).height(tmph).each(function() {
       var ktab = new KTab(this);
@@ -390,9 +367,8 @@ var KFramework = Class.extend({
   },
   save : function() {
     var tmp = this.getParameters();
-    //console.log(tmp);
     if(window.localStorage) {
-      localStorage.frameworkParameters = JSON.stringify(tmp);
+      setConfig('frameworkParameters', tmp);
     } else {
       alert('Sorry. LocalStorage is required.');
     }
@@ -431,11 +407,11 @@ var KFramework = Class.extend({
         canclose : true
       }]];
       // here the parsing procedure should be doublechecked.
-      if(window.localStorage.frameworkParameters && JSON.parse(localStorage.frameworkParameters)) {
-        var xtmp = JSON.parse(localStorage.frameworkParameters);
+      if(getConfig('frameworkParameters')) {
+        var xtmp = getConfig('frameworkParameters');
         //if(xtmp.length && typeof xtmp == 'Array'){
-        tmp = xtmp;
-        //}
+          tmp = xtmp;
+          //}
       }
       var columncount = this.setColumnCount(tmp.length);
       // here a merge is required. but i have not finished the merge function.
