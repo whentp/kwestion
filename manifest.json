@@ -1,6 +1,6 @@
 {
     "name": "kwestion",
-    "version": "1.0",
+    "version": "5.1",
     "description": "kwestion for chrome",
     "app": {
         "launch": {
@@ -8,8 +8,8 @@
         }
     },
     "icons": {
-        "128": "kwestion128.png"
+        "128": "kwestion128.png",
+        "16": "kwestion.png"
     },
     "permissions": ["<all_urls>", "unlimitedStorage", "notifications", "tabs"]
 }
-
