@@ -16,7 +16,13 @@ var tltype = {
 var onAddList = function() {
   frame.save();
 };
-var tapistr = GenerateAddPrefix(k_config.twitter_api_prefix);
+
+var tapistr = function(urlsuffix){
+  var url = {'url': 'https://api.twitter.com/1/' + urlsuffix,
+    proxy: k_config.twitter_api_prefix + urlsuffix
+  };
+  return url;
+};
 
 function checklogin() {
   Kinit();
@@ -39,14 +45,18 @@ function checklogin() {
     }), function() {
       $(".pinlogin").height($(window).height());
       $('a.gettwitterpin').click(function() {
-        kreq.requestPin(k_config.twitter_oauth_api_prefix + 'request_token', function(data) {
-          window.open(k_config.twitter_oauth_api_prefix + 'authorize?' + data);
+        var url = 'https://api.twitter.com/oauth/request_token';
+        if(k_config.twitter_oauth_api_proxy_prefix){
+          url = {'url':'https://api.twitter.com/oauth/request_token', proxy: k_config.twitter_oauth_api_proxy_prefix + 'request_token'};
+        }
+        kreq.requestPin(url, function(data) {
+          window.open(k_config.twitter_oauth_api_proxy_prefix + 'authorize?' + data);
         });
       });
       $('#sendping').click(function() {
         var tmppin = $('#pinvalue').val();
         if(tmppin) {
-          kreq.accessByPin(k_config.twitter_oauth_api_prefix + 'access_token', tmppin, function(data) {
+          kreq.accessByPin(k_config.twitter_oauth_api_proxy_prefix + 'access_token', tmppin, function(data) {
             setConfig('oauthstr', kreq.toString());
             $('#dialogbackground').click();
             init();

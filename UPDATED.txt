@@ -1,4 +1,6 @@
-
+23:15 2012/3/16
+* rewrite twitter_proxy.
+----------------------------------
 14:58 2012/3/15
 * fix some bugs on setting current_timeline
 * fix some bugs on setting klcontainer.

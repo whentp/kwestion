@@ -31,11 +31,13 @@ function initproxysetting(selector) {
     if(tmp && tmp.use) {
       k_config.twitter_api_prefix = tmp.api;
       k_config.twitter_search_api_prefix = tmp.search;
-      k_config.twitter_oauth_api_prefix = tmp.oauth;
+      //k_config.twitter_oauth_api_prefix = 
+      k_config.twitter_oauth_api_proxy_prefix = tmp.oauth;//'https://api.twitter.com/oauth/';
     } else {
       k_config.twitter_api_prefix = 'https://api.twitter.com/1/';
       k_config.twitter_search_api_prefix = 'http://search.twitter.com/';
-      k_config.twitter_oauth_api_prefix = 'https://twitter.com/oauth/';
+      //k_config.twitter_oauth_api_prefix = 'https://api.twitter.com/oauth/';
+      k_config.twitter_oauth_api_proxy_prefix = 'https://api.twitter.com/oauth/';
     }
   });
 }(function() {
@@ -52,8 +54,8 @@ function initproxysetting(selector) {
     if(tmp && tmp.use) {
       k_config.twitter_api_prefix = tmp.api;
       k_config.twitter_search_api_prefix = tmp.search;
-      k_config.twitter_oauth_api_prefix = tmp.oauth;
-      tapistr = GenerateAddPrefix(k_config.twitter_api_prefix);
+      k_config.twitter_oauth_api_proxy_prefix = tmp.oauth;
+      //tapistr = GenerateAddPrefix(k_config.twitter_api_prefix);
     }
   });
 })();

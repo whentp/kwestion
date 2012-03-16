@@ -1,14 +1,14 @@
 // vim:ft=javascript:tabstop=2:shiftwidth=2:softtabstop=2:expandtab
 /*
- MIT License (MIT)
- Copyright (c) 2011 Andy Edinborough
+MIT License (MIT)
+Copyright (c) 2011 Andy Edinborough
 
- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
- The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 /*global window */
 /*jshint curly: false */
@@ -63,9 +63,9 @@
     };
 
     /**
-     * Added by @whentp.
-     * **/
-    message.parameters.push(['oauth_callback', (options.oauth_callback ? options.oauth_callback : 'oob')])
+    * Added by @whentp.
+    * **/
+    //message.parameters.push(['oauth_callback', (options.oauth_callback ? options.oauth_callback : 'oob')])
     if(options.oauth_token)
       message.parameters.push(['oauth_token', options.oauth_token]);
     OAuth.setTimestampAndNonce(message);
@@ -88,18 +88,28 @@
           }
         });
       });
-    if(options.url.indexOf('?') > -1) {
-      //This data was already included in the message object
-      options.url = options.url.substr(0, options.url.indexOf('?'));
-    }
-    return options;
+      if(options.url.indexOf('?') > -1) {
+        //This data was already included in the message object
+        options.url = options.url.substr(0, options.url.indexOf('?'));
+      }
+      return options;
   }
 
 
   $.oauth = function(options) {
     var d = $.Deferred();
     OAuth = window.OAuth;
-    $.ajax(addOAuthStuffs(options)).done(d.resolve);
+
+    var original_url = options.url, proxy_url = options.url;
+    if(options.url && options.url.proxy){
+      original_url = options.url.url;
+      proxy_url = options.url.proxy;
+    }
+    options.url = original_url;
+    var newoptions = addOAuthStuffs(options);
+
+    newoptions.url = proxy_url;
+    $.ajax(newoptions).done(d.resolve);
 
     return $.extend({
       success : function() {
