@@ -202,7 +202,7 @@ function deletetweet(id) {
   // delete regular messages.
   if(confirm('Are you sure?')) {
     kreq.ajax({
-      url : tapistr('statuses/destroy/') + id + '.json',
+      url : tapistr('statuses/destroy/' + id + '.json'),
       type : 'post'
     }).success(function(data) {
       showmsg('Succeed.');

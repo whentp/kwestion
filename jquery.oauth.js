@@ -65,7 +65,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     /**
     * Added by @whentp.
     * **/
-    //message.parameters.push(['oauth_callback', (options.oauth_callback ? options.oauth_callback : 'oob')])
+    message.parameters.push(['oauth_callback', (options.oauth_callback ? options.oauth_callback : 'oob')])
     if(options.oauth_token)
       message.parameters.push(['oauth_token', options.oauth_token]);
     OAuth.setTimestampAndNonce(message);
@@ -94,7 +94,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       }
       return options;
   }
-
 
   $.oauth = function(options) {
     var d = $.Deferred();
