@@ -168,7 +168,7 @@
 		<div>${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button" onclick="opentab('who fo ${screen_name}', 'follower', '${screen_name}', 'follower', frame.items.length - 1); return false;">${followers_count}</a> follower. He/she is following<a href="#" class="button" onclick="opentab('${screen_name} fo who', 'following', '${screen_name}', 'following', frame.items.length - 1); return false;">${friends_count}</a>people. His/Her URL is <a href="${url}" target="_blank">${url}</a></div>
 	</script>
 	<script type="text/html" id="headbar">
-		<a href="http://code.google.com/p/kwestion/" target="_blank"><img src="kwestion_link.png" /></a>
+		<a href="https://github.com/whentp/kwestion/" target="_blank"><img src="kwestion_link.png" /></a>
 		<a href="#" onclick="setprofile(this);return false;">${myname}</a>
 		<em>${statuses_count}</em>
 		<span onclick="toolbarcollapse(this); return false;" id="toolbarcollapse">{{if storage.toolbarcollapse=='yes'}}&raquo;{{else}}&laquo;{{/if}}</span>
