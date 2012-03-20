@@ -8,7 +8,7 @@ var KList = Class.extend({
   init : function(selector) {
     var root = this;
     var elem = $(selector);
-    this.userpanel = $("<div class='userpanel'>ss</div>").appendTo(elem);
+    this.userpanel = $("<div class='userpanel'><b>Create</b> new tabs or <b>Drag & Drop</b> tabs from other columns.</div>").appendTo(elem);
     this.container = $("<div class='k-list-container'><div class='k-list-item-wrap'></div></div>");
     this.end = root.container.find("div.k-list-item-wrap");
     elem.append(root.container);

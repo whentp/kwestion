@@ -34,27 +34,11 @@
       }
     });
     $('a.openhome').click(function() {
-      var newtimeline = frame.CreateTimelineByType({
-        action : 'user',
-        type : 'user',
-        user : mouseoverInfo.user,
-        name : mouseoverInfo.user,
-        canclose : true
-      });
-      frame.items[frame.items.length - 1].addList(newtimeline, true);
-      newtimeline.check();
+      opentab(mouseoverInfo.user, 'user', mouseoverInfo.user, 'user', frame.items.length - 1);      
       return false;
     });
     $('a.openhashtag').click(function() {
-      var newtimeline = frame.CreateTimelineByType({
-        action : 'hash',
-        type : 'hash',
-        user : mouseoverInfo.hash,
-        name : 'Search:' + mouseoverInfo.hash,
-        canclose : true
-      });
-      frame.items[frame.items.length - 1].addList(newtimeline, true);
-      newtimeline.check();
+      opentab('Search:' + mouseoverInfo.hash, 'hash', mouseoverInfo.hash, 'hash', frame.items.length - 1);
       return false;
     });
     $('a.atsomebody').click(function() {

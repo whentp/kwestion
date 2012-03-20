@@ -86,17 +86,16 @@ function addNewTimeline(obj, index) {
         sb.push('<a href="#" class="opentab" onclick="opentab(\'', b.name, '\',\'', b.action, '\',\'', b.user, '\',\'', b.type, '\', ', index, '); return false;">', this.name, '</a> ');
       }
     });
-    var id = 0;
+    var id = index;
     var openuser = "<div class='opentabs clear'>" + sb.join('') + '</div>';
-    openuser += "<div id='openuser_div'><div>Users' IDs(separated by ','):</div><input type=\"text\" id=\"inputuser\" value=\"\" /> <a href='#' onclick='openusers(" + id + "); return false;'>open</a></div>";
-    //openuser += "<div id='openlist_div'><div>List name(name/list):</div><input type=\"text\" id=\"inputlist\" value=\"\" /> <a href='#' onclick='opentab(\"list\",$(\"#inputlist\").val()," + id + "); return false;'>open</a></div>";
+
     //var bottom = "<div id='list_bar'><a href='#' onclick='opentab(\"userlist\",\"" + myname + "\"," + id + ")'>Manage</a> | <a href='#' onclick='sorry(); return false;'>New List</a> | <a href='#' onclick='opentab(\"listmembership\",\"" + myname + "\"," + id + "); return false;' title='shows which lists you are in.'>Membership</a></div>";
 
     simpledialog(openuser, false, {
       'top' : offset.top + 20,
       'left' : offset.left
-    }, 200);
-  }, 200);
+    }, 200).append($('#openuserandlist').tmpl({'id': index}));
+  }, 300);
 }
 
 function openusers(index) {
@@ -105,10 +104,20 @@ function openusers(index) {
   if($.trim(abc).length && users.length) {
     if(users.length) {
       $.each(users, function(a, b) {
-        if(!frame.findTimeline('user', b) && b != myname) {
+        if(!frame.findTimeline('user', b)) {
           opentab(b, 'user', b, 'user', index);
         }
       });
+    }
+  }
+  return false;
+}
+
+function openlist(index) {
+  var abc = $.trim($("#inputlist").val());
+  if(abc.length) {
+    if(!frame.findTimeline('list', abc)) {
+      opentab(abc, 'list', abc, 'list', index);
     }
   }
   return false;
@@ -136,6 +145,7 @@ function opentab(name, action, user, type, index) {
     'home' : true,
     'reply' : true
   };
+  //console.log(frame.findTimeline(action, user), action, user);
   if(frame.findTimeline(action, user)) {
     alert('You have already created a timeline.');
     return;

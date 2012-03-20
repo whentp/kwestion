@@ -7,6 +7,7 @@ var tltype = {
   home : TTimeline,
   reply : TTimeline,
   dm : TTimeline,
+  list : TTimeline,
   user : UserTTimeline,
   hash : HashTTimeline,
   follower : UserlistTTimeline,

@@ -18,6 +18,10 @@ k_plugins.basic = {
       msg.processedtext = replacedText;
     }
     return true;
+  },
+  name: 'Basic',
+  ui: function(){
+    return "Click <a href='https://github.com/whentp/kwestion/issues' target='_blank' style='color:red;font-weight:bold;'>here</a> to report bugs.";
   }
 };
 

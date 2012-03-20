@@ -59,15 +59,7 @@ function dosearch() {
   var tmphash = $.trim($('#message').val());
   if(tmphash === '')
     return;
-  var newtimeline = frame.CreateTimelineByType({
-    action : 'hash',
-    type : 'hash',
-    user : tmphash,
-    name : 'Search:' + tmphash,
-    canclose : true
-  });
-  frame.items[frame.items.length - 1].addList(newtimeline, true);
-  newtimeline.check();
+  opentab('Search:' + tmphash, 'hash', tmphash, 'hash', frame.items.length - 1);
   $('#message').val('');
   return false;
 }

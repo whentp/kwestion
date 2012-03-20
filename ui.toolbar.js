@@ -90,7 +90,7 @@ toolbarpool.items.twitter = {
   }
 };
 
-toolbarpool.items.home = toolbarpool.items.reply = toolbarpool.items.hash = toolbarpool.items.user = toolbarpool.items.fav = toolbarpool.items.rtofme = toolbarpool.items.rttome = toolbarpool.items.rtbyme = toolbarpool.items.twitter;
+toolbarpool.items.home = toolbarpool.items.reply = toolbarpool.items.hash = toolbarpool.items.user = toolbarpool.items.fav = toolbarpool.items.rtofme = toolbarpool.items.rttome = toolbarpool.items.rtbyme = toolbarpool.items.list = toolbarpool.items.twitter;
 
 toolbarpool.items.dm = {
   actions : {

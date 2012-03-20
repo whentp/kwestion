@@ -301,7 +301,6 @@
 		</div>
 	</script>
 
-
 	<script type="text/html" id="proxysetting">
 		<table>
 			<tr><td>API Proxy</td><td><input type="text" value="" id="apiproxy" /></td><td><a title='e.g. https://api.twitter.com/1/'>?</a></td></tr>
@@ -312,4 +311,8 @@
 		</table>
 	</script>
 
+	<script type="text/html" id="openuserandlist">
+		<div id='openuser_div'><div>Users' IDs(separated by ','):</div><input type="text" id="inputuser" value="" /> <a href='#' onclick='openusers(${id}); return false;'>open</a></div>
+		<div id='openlist_div'><div>List name(name/list):</div><input type="text" id="inputlist" value="" /> <a href='#' onclick='openlist(${id}); return false;'>open</a></div>
+	</script>
 </html>

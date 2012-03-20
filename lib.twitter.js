@@ -12,6 +12,7 @@ var TwitterTimelineBase = Timeline.extend({
     this.unreadcount = 0;
     this.working = false;
     this.type = param.type;
+    var listtmp = (this.action == 'list')?this.user.split('/'):['',''];
     this.urls = {
       'home' : tapistr('statuses/home_timeline.json'),
       'reply' : tapistr('statuses/mentions.json'),
@@ -23,6 +24,7 @@ var TwitterTimelineBase = Timeline.extend({
       'rtbyme' : tapistr("statuses/retweeted_by_me.json"),
       'rttome' : tapistr("statuses/retweeted_to_me.json"),
       'rtofme' : tapistr("statuses/retweets_of_me.json"),
+      'list' : tapistr(listtmp[0]+'/lists/'+listtmp[1]+'/statuses.json'),
       'hash' : k_config.twitter_search_api_prefix + 'search.json'
     };
     if(param.canclose)

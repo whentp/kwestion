@@ -5,8 +5,8 @@ var userinfo = {};
 
 var Kinit = function() {
   $('body').append($(['<div class="bottom-loader"></div>', "<div id='wait' style='display:none'><img src='loader.gif' style='margin:10 0;' /></div>", // finished.
-  "<div id='dialog'></div>", // finished.
-  "<div id='dialogbackground'></div>", '<div id="msgbox" class="s_clear" style="display:none;">', '<div id="msgboxhead">kwestion</div>', '<div id="msgboxbody" class="s_clear"></div>', '</div>'].join('')));
+    "<div id='dialog'></div>", // finished.
+    "<div id='dialogbackground'></div>", '<div id="msgbox" class="s_clear" style="display:none;">', '<div id="msgboxhead">kwestion</div>', '<div id="msgboxbody" class="s_clear"></div>', '</div>'].join('')));
 };
 function sorry() {
   alert('@whentp is VERY lazy.');
@@ -101,7 +101,10 @@ function simpledialog(html, callback, offset, width, onsimpledialogclose) {
       $('#dialog').css('top', offset.top);
     }
   }, 10);
-}(function() {
+  return $('#dialog');
+}
+
+(function() {
   // the following empty node is for html decode.
   var htmldecodenode = $('<div/>');
   window.htmldecode = function(value) {
