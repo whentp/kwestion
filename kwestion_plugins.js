@@ -17,11 +17,14 @@ k_plugins.basic = {
       replacedText = replacedText.replace(replacePattern3, '<a target="_blank" href="mailto:$1">$1</a>');
       msg.processedtext = replacedText;
     }
+    if(msg.retweeted_status) {
+      msg.processedtext += '<div class="retweet_status">This is an official retweet' + (msg.retweet_count ? (' <span>(' + msg.retweet_count + (msg.retweet_count < 2 ? ' time' : ' times') + ')') : '') + '</span>.</div>';
+    }
     return true;
   },
   name: 'Basic',
   ui: function(){
-    return "Click <a href='https://github.com/whentp/kwestion/issues' target='_blank' style='color:red;font-weight:bold;'>here</a> to report bugs.";
+    return "Click <a href='https://github.com/whentp/kwestion/issues' target='_blank' style='color:red;font-weight:bold;'>here</a> to report bugs. Current Version: " + k_config.version;
   }
 };
 
@@ -60,7 +63,7 @@ k_plugins.geoinformation = {
 k_plugins.filter_content = {
   name : 'Filter',
   ui : function() {
-    return '<div>Ignore tweets containing the following strings. Each string a line.</div><textarea id="filter_content" class="border1"></textarea><div>Ignore tweets sent by the following IDs. Each string a line.</div><textarea id="filter_content_id" class="border1"></textarea>';
+    return '<table><tr><td style="border-right:1px solid #aaa;">Filter tweets containing the following strings.<br /><textarea id="filter_content" class="border1"></textarea></td><td>Filter tweets by these IDs. Each string a line.<br /><textarea id="filter_content_id" class="border1"></textarea></td></tr></table>';
   },
   init : function() {
     $('#filter_content').val(getConfig('filter_content'));
@@ -113,22 +116,6 @@ k_plugins.imgpreview = {
   }
 };
 
-k_plugins.showretweet = {
-  name : 'Format retweets',
-  ui : function() {
-    return 'Working...';
-  },
-  init : function() {
-
-  },
-  filter : function(msg, type) {
-    if(msg.retweeted_status) {
-      msg.processedtext += '<div class="retweet_status">This is an official retweet' + (msg.retweet_count ? (' <span>(' + msg.retweet_count + (msg.retweet_count < 2 ? ' time' : ' times') + ')') : '') + '</span>.</div>';
-    }
-    return true;
-  }
-};
-
 k_plugins.closenotify = {
   name : 'Close notification',
   ui : function() {
@@ -144,7 +131,7 @@ k_plugins.closenotify = {
 k_plugins.sinahometimeline = {
   name : 'Your Weibo Home',
   ui : function() {
-    return ((window.ksinareq && getConfig('sinaoauthstr')) ? 'You have been authorized. ' : 'First click <a href="#" id="sinaauth">Authorize</a>, then ') + '<a href="#" id="startweibobutton">Start</a>.';
+    return ((window.ksinareq && getConfig('sinaoauthstr')) ? 'You have been authorized. ' : 'First click <a href="#" id="sinaauth">Authorize</a>, then ') + '<a href="#" id="startweibobutton">Start</a>. <a href="#" id="stopweibobutton">Stop</a>.';
   },
   init : function() {
     var root = this;
@@ -160,19 +147,19 @@ k_plugins.sinahometimeline = {
           consumerSecret : k_config.sina_consumer_secret
         });
 
-        simpledialog($("#sinapinlogin").tmpl({
+        simpledialog(JST.index_sinapinlogin({
           name : 'sina weibo'
         }), function() {
           $(".pinlogin").height($(window).height());
           $('a.gettwitterpin').click(function() {
-            ksinareq.requestPin('http://api.t.sina.com.cn/oauth/request_token', function(data) {
-              window.open('http://api.t.sina.com.cn/oauth/authorize?' + data);
+            ksinareq.requestPin('https://api.weibo.com/oauth2/authorize', function(data) {
+              window.open('https://api.weibo.com/oauth2/authorize?' + data);
             });
           });
           $('#sendping').click(function() {
             var tmppin = $('#pinvalue').val();
             if(tmppin) {
-              ksinareq.accessByPin('http://api.t.sina.com.cn/oauth/access_token', tmppin, function(data) {
+              ksinareq.accessByPin('https://api.weibo.com/oauth2/access_token', tmppin, function(data) {
                 setConfig('sinaoauthstr', ksinareq.toString());
                 $('#dialogbackground').click();
                 root.start();
@@ -190,6 +177,16 @@ k_plugins.sinahometimeline = {
       }
     });
     $("#startweibobutton").click(root.start);
+    $("#stopweibobutton").click(root.stop);
+  },
+  stop: function(){
+setConfig('sinaoauthstr', '');
+clearInterval(window.sinaweibohomeinterval);
+window.sinaweibohomeinterval = null;
+clearInterval(window.sinaweiboreplyinterval);
+window.sinaweiboreplyinterval = null;
+clearInterval(window.sinaweibo_comment_interval);
+window.sinaweibo_comment_interval = null;
   },
   start : function() {
     if(window.sinaweibohomeinterval) {

@@ -183,8 +183,9 @@ var KTab = Class.extend({
         //console.log(tmp.next());
         tmp.next().click();
       } else {
+        root.selector.find('.userpanel').html("<div class='userpanel'><b>Create</b> new tabs or <b>Drag & Drop</b> tabs from other columns.</div>").show(0);
         tl.klcontainer.clear();
-        $('<div class="emptycontent">No content.</div>').insertBefore(tl.klcontainer.end);
+        $('<div class="emptycontent"></div>').insertBefore(tl.klcontainer.end);
       }
     }
     tmp.detach().remove();

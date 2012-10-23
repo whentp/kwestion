@@ -41,10 +41,14 @@ function checklogin() {
       consumerSecret : k_config.twitter_consumer_secret
     });
 
-    simpledialog($("#pinlogin").tmpl({
+    simpledialog(JST.index_pinlogin({
       name : 'twitter'
     }), function() {
       $(".pinlogin").height($(window).height());
+      $("#initproxysettingbutton").click(function(){
+        initproxysetting($(this).parent().next());
+        return false;
+      });
       $('a.gettwitterpin').click(function() {
         var url = 'https://api.twitter.com/oauth/request_token';
         if(k_config.twitter_oauth_api_proxy_prefix){
@@ -76,7 +80,6 @@ function checklogin() {
 }
 
 function init() {
-  KinitToolbar();
   KUIMsgSendBind();
   loaduserinfo();
   bindmouseover();
@@ -87,6 +90,7 @@ function init() {
 
   frame.load();
   KframeResize();
+  setTimeout(function(){$(window).resize();}, 100);
 }
 
 $(checklogin);

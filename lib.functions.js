@@ -348,4 +348,4 @@ function logout() {
   location.reload();
 }
 
-var storage = localStorage;
+var storage = window.localStorage;

@@ -42,11 +42,25 @@ var TwitterTimelineBase = Timeline.extend({
   renderItem : function(itemvalue) {
     var type = itemvalue.type ? itemvalue.type : '';
     var tmpl;
-    if(( tmpl = $('#timeline-template' + '-' + type)).size() == 0)
-      tmpl = $('#timeline-template');
-    var tmp = tmpl.tmpl(itemvalue);
+    if(!( tmpl = JST['index_timeline_template' + '_' + type]))
+      tmpl = JST.index_timeline_template;
+    var tmp = $(tmpl(itemvalue));
     tmp.get(0).raw = itemvalue;
     timelinebindsingle(tmp);
+    tmp.find('a.smallmap').click(function(){
+      smallmap(this);
+      return false;
+    });
+    if(type == 'follower' || type == 'following'){
+      tmp.find('a.foerbutton').click(function(){
+        opentab('who fo ' + itemvalue.screen_name, 'follower', itemvalue.screen_name, 'follower', frame.items.length - 1);
+        return false;
+      });
+      tmp.find('a.foingbutton').click(function(){
+        opentab(itemvalue.screen_name + ' fo who', 'following', itemvalue.screen_name, 'following', frame.items.length - 1);
+        return false;
+      });
+    }
     //console.log($(tmp).text());
     return tmp;
   },
@@ -97,7 +111,7 @@ var TTimeline = TwitterTimelineBase.extend({
     kreq.ajax({
       url : root.urls[root.action],
       data : params
-    }).success(function(rawdata) {
+    }).done(function(rawdata) {
       root.working = false;
       var data = rawdata;
       $.each(data, function(a, b) {
@@ -162,9 +176,9 @@ var TTimeline = TwitterTimelineBase.extend({
       }
       if(root.visible())
         root.klcontainer.showBottomLoader(false);
-    }, 'json').error(function() {
+    }, 'json').fail(function() {
       root.working = false;
-    }).complete(function() {
+    }).always(function() {
       root.working = false;
     });
   }
@@ -174,8 +188,19 @@ var UserTTimeline = TTimeline.extend({
   showPanel : function(panel) {
     var root = this;
     if(userinfo[this.user]) {
-      $(panel).empty().html($('#userinfo').tmpl(userinfo[this.user]));
-      //.show(0);
+      $(panel).empty().html(JST.index_userinfo(userinfo[this.user]));
+      $(panel).find('.foerbutton').click(function(){
+        opentab('who fo ' + userinfo[this.user].screen_name, 'follower', userinfo[root.user].screen_name, 'follower', frame.items.length - 1);
+        return false;
+      });
+      $(panel).find('.foingbutton').click(function(){
+        opentab(userinfo[root.user].screen_name + ' fo who', 'following', userinfo[root.user].screen_name, 'following', frame.items.length - 1); 
+        return false;
+      });
+      $(panel).find('.followbutton').click(function(){
+        follow(this, userinfo[root.user].screen_name); 
+        return false;
+      });
     } else {
       $(panel).empty().html("<br /><img src='loader.gif' /><br />");
       kreq.ajax({
@@ -183,8 +208,20 @@ var UserTTimeline = TTimeline.extend({
         data : {
           screen_name : root.user
         }
-      }).success(function(data) {
-        $(panel).empty().html($('#userinfo').tmpl(data));
+      }).done(function(data) {
+        $(panel).empty().html(JST.index_userinfo(data));
+        $(panel).find('.foerbutton').click(function(){
+          opentab('who fo ' + data.screen_name, 'follower', data.screen_name, 'follower', frame.items.length - 1); 
+          return false;
+        });
+        $(panel).find('.foingbutton').click(function(){
+          opentab(data.screen_name + ' fo who', 'following', data.screen_name, 'following', frame.items.length - 1); 
+          return false;
+        });
+        $(panel).find('.followbutton').click(function(){
+          follow(this, data.screen_name); 
+          return false;
+        });
         //.show(0);
         userinfo[root.user] = data;
       });
@@ -206,7 +243,7 @@ var HashTTimeline = TwitterTimelineBase.extend({
     kreq.ajax({
       url : root.urls[root.action],
       data : params
-    }).success(function(rawdata) {
+    }).done(function(rawdata) {
       root.working = false;
       var data = $.map(rawdata.results, function(val) {
         var newval = val;
@@ -272,9 +309,9 @@ var HashTTimeline = TwitterTimelineBase.extend({
       }
       if(root.visible())
         root.klcontainer.showBottomLoader(false);
-    }).error(function() {
+    }).fail(function() {
       root.working = false;
-    }).complete(function() {
+    }).always(function() {
       root.working = false;
     });
   }
@@ -296,7 +333,7 @@ var UserlistTTimeline = TwitterTimelineBase.extend({
     kreq.ajax({
       url : root.urls[root.action],
       data : params
-    }).success(function(rawdata) {
+    }).done(function(rawdata) {
       root.working = false;
       var data = rawdata.users;
       if(!root.page || back) {
@@ -326,9 +363,9 @@ var UserlistTTimeline = TwitterTimelineBase.extend({
       }
       if(root.visible())
         root.klcontainer.showBottomLoader(false);
-    }).error(function() {
+    }).fail(function() {
       root.working = false;
-    }).complete(function() {
+    }).always(function() {
       root.working = false;
     });
   },

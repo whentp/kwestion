@@ -1,21 +1,6 @@
 // vim:ft=javascript:tabstop=2:shiftwidth=2:softtabstop=2:expandtab
 "use strict";
 
-var kltoolbar;
-
-function KinitToolbar() {
-  kltoolbar = $($('#floattoolbar').tmpl({}));
-  kltoolbar.find("li").hover(function() {
-    $(this).addClass("hover");
-    $('ul:first', this).css('visibility', 'visible');
-  }, function() {
-    $(this).removeClass("hover");
-    $('ul:first', this).css('visibility', 'hidden');
-
-  });
-  $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
-}
-
 var KFloatToolbar = Class.extend({
   init : function() {
     this.items = {};
@@ -32,7 +17,7 @@ var KFloatToolbar = Class.extend({
           }
         };
       } else {
-        var selector = $(root.items[name].template).tmpl({});
+        var selector = JST['index_' + root.items[name].template]({});
         //console.log(selector);
         if($(selector).size() > 0) {
           root.cached[name] = selector;
@@ -70,7 +55,7 @@ toolbarpool.items.twitter = {
       return false;
     }
   },
-  template : '#toolbar-twitter',
+  template : 'toolbar_twitter',
   init : function(jobj, raw) {
     if(raw.in_reply_to_status_id && raw.in_reply_to_status_id != '') {
       $(jobj).find('li.inreplyto').show(0);
@@ -104,7 +89,7 @@ toolbarpool.items.dm = {
       return false;
     }
   },
-  template : '#toolbar-dm',
+  template : 'toolbar_dm',
   init : function(jobj, raw) {
   }
 };
@@ -120,7 +105,7 @@ toolbarpool.items.following = toolbarpool.items.follower = {
       sorry();
     }
   },
-  template : '#toolbar-userlist',
+  template : 'toolbar_userlist',
   init : function(jobj, raw) {
     if(raw.following) {
       $(jobj).find('a.follow').text('Unfollow');
@@ -132,5 +117,5 @@ toolbarpool.items.following = toolbarpool.items.follower = {
 
 toolbarpool.items.sina = {
   actions : {},
-  template : '#toolbar-sina'
+  template : 'toolbar_sina'
 };

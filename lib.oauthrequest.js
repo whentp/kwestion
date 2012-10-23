@@ -32,13 +32,13 @@ var Koauth = Class.extend({
       return false;
     }
   },
-  accessByPin : function(url, pin, success, error) {
+  accessByPin : function(url, pin, done, error) {
     var root = this;
     $.oauth({
       'url' : url + '?oauth_verifier=' + pin + '&' + this.requestParams,
       consumerKey : this.consumerKey,
       consumerSecret : this.consumerSecret
-    }).success(function(data) {
+    }).done(function(data) {
       //console.dir(data);
       root.accessParams = {};
       var qvars_tmp = data.split('&');
@@ -46,8 +46,8 @@ var Koauth = Class.extend({
         var y = qvars_tmp[i].split('=');
         root.accessParams[y[0]] = decodeURIComponent(y[1]);
       }
-      success(root.accessParams);
-    }).error(error);
+      done(root.accessParams);
+    }).fail(error);
   },
   requestPin : function(requesturl, callback) {
     var root = this;
@@ -55,7 +55,7 @@ var Koauth = Class.extend({
       consumerKey : this.consumerKey,
       consumerSecret : this.consumerSecret,
       url : requesturl
-    }).success(function(data) {
+    }).done(function(data) {
       //console.log(data);
       root.requestParams = data;
       callback(data);

@@ -1,6 +1,7 @@
 {
     "name": "kwestion",
-    "version": "5.1.5",
+    "version": "5.1.7",
+    "manifest_version": 2,
     "description": "kwestion for chrome",
     "app": {
         "launch": {
@@ -11,5 +12,5 @@
         "128": "kwestion128.png",
         "16": "kwestion.png"
     },
-    "permissions": ["<all_urls>", "unlimitedStorage", "notifications", "tabs"]
+    "permissions": ["<all_urls>", "unlimitedStorage", "notifications"]
 }

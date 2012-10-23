@@ -7,7 +7,7 @@ var myname = '';
 function loaduserinfo() {
   kreq.ajax({
     url : tapistr('account/verify_credentials.json')
-  }).success(function(data) {
+  }).done(function(data) {
     myinfo = data;
     myname = myinfo.screen_name;
     storage.myname = myname;
@@ -25,9 +25,9 @@ function setdescription() {
         'description' : x
       },
       type : 'post'
-    }).success(function(d) {
+    }).done(function(d) {
       showmsg('OK');
-      myinfo = d.user;
+      myinfo = d;
       if(userinfo[myname]) {
         delete userinfo[myname];
       }
@@ -83,7 +83,7 @@ function addNewTimeline(obj, index) {
     var sb = [];
     $.each(mytimelineparameters, function(a, b) {
       if(!frame.findTimeline(b.action, b.user)) {
-        sb.push('<a href="#" class="opentab" onclick="opentab(\'', b.name, '\',\'', b.action, '\',\'', b.user, '\',\'', b.type, '\', ', index, '); return false;">', this.name, '</a> ');
+        sb.push('<a href="#" class="opentab" id="', b.action, '_', b.user, '_', b.type, '_button">', this.name, '</a> ');
       }
     });
     var id = index;
@@ -94,7 +94,24 @@ function addNewTimeline(obj, index) {
     simpledialog(openuser, false, {
       'top' : offset.top + 20,
       'left' : offset.left
-    }, 200).append($('#openuserandlist').tmpl({'id': index}));
+    }, 200).append(JST.index_openuserandlist({'id': index}));
+
+    $('#openuserbutton').click(function(){
+      openusers($('#inputuser').val());
+      return false;
+    });
+
+    $('#openlistbutton').click(function(){
+      openlist($('#inputlist').val());
+      return false;
+    });
+
+    $.each(mytimelineparameters, function(a, b) {
+      $('#' + b.action + '_' + b.user + '_' + b.type + '_button').click(function(){
+        opentab(b.name, b.action, b.user, b.type, index); 
+        return false;
+      });
+    });
   }, 300);
 }
 
@@ -135,9 +152,11 @@ function toolbarcollapse(obj) {
 
 function setprofile(obj) {
   var offset = $(obj).offset();
-  simpledialog($('#changeprofile').tmpl({
+  simpledialog(JST.index_changeprofile({
     bio : myinfo.description
-  }), false, offset, 320);
+  }), function(){
+  $('#setdescriptionbutton').click(function(){setdescription(); return false;});
+  }, offset, 320);
 }
 
 function opentab(name, action, user, type, index) {

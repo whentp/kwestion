@@ -54,7 +54,7 @@ var WTimeline = Timeline.extend({
     ksinareq.ajax({
       url : root.urls[root.action],//'http://api.t.sina.com.cn/statuses/home_timeline.json',
       data : params
-    }).success(function(rawdata) {
+    }).done(function(rawdata) {
       root.working = false;
       var data = rawdata;
       $.each(data, function(a, b) {
@@ -106,9 +106,9 @@ var WTimeline = Timeline.extend({
         var tmp = data[0].id;
         root.newesttimestamp = (tmp > root.newesttimestamp) ? tmp : root.newesttimestamp;
       }
-    }).error(function() {
+    }).fail(function() {
       root.working = false;
-    }).complete(function() {
+    }).always(function() {
       root.working = false;
     });
   }

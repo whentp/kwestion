@@ -13,7 +13,7 @@ function initproxysetting(selector) {
     };
   }
   if(!proxysettingui)
-    proxysettingui = $($('#proxysetting').tmpl({}));
+    proxysettingui = $(JST.index_proxysetting({}));
   $(selector).append(proxysettingui);
   $('#apiproxy').val(settings.api);
   $('#searchapiproxy').val(settings.search);
@@ -40,14 +40,17 @@ function initproxysetting(selector) {
       k_config.twitter_oauth_api_proxy_prefix = 'https://api.twitter.com/oauth/';
     }
   });
-}(function() {
+}
+
+(function() {
   $(function() {
     k_plugins.proxysetting = {
       name : 'proxy setting',
       ui : function() {
-        return 'Click <a href="#" onclick="initproxysetting($(this).next()); return false;">here</a> to set a twitter api proxy.<div></div>';
+        return 'Click <a href="#" id="initproxysettingbutton">here</a> to set a twitter api proxy.<div></div>';
       },
       init : function() {
+      initproxysetting($("#initproxysettingbutton").next()); return false;
       }
     };
     var tmp = getConfig('twitterproxysetting');

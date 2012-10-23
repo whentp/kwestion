@@ -1,7 +1,7 @@
 // vim:ft=javascript:tabstop=2:shiftwidth=2:softtabstop=2:expandtab
 
 var k_config = {
-  version : '5 beta55',
+  version : '5.1.7',
   twitter_consumer_key : 'cEik18NpLALwbgTLz0pefQ',
   twitter_consumer_secret : '5p47cbmygL0xaBOzTexTainxBZPfprte0wa6ERjEays',
   twitter_api_prefix : 'https://api.twitter.com/1/', // all url prefix should end with a slash.
@@ -9,8 +9,8 @@ var k_config = {
   twitter_oauth_api_prefix : 'https://api.twitter.com/oauth/',
   twitter_oauth_api_proxy_prefix: 'https://api.twitter.com/oauth/',
 
-  sina_consumer_key : '4285963842',
-  sina_consumer_secret : '0a5936ad4019b638b5733b5321ea2844',
+  sina_consumer_key : '2543274311',
+  sina_consumer_secret : 'e87c4ea3e711d2bc127d01afd2a3c12b',
   sina_api_prefix : 'http://api.t.sina.com.cn/'
 };
 

@@ -1,3 +1,6 @@
+13:15 2012/10/23
+* migrate to manifest version 2.
+----------------------------------
 14:17 2012/3/20
 * supported list
 * added an issue tracker

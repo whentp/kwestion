@@ -111,13 +111,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     $.ajax(newoptions).done(d.resolve);
 
     return $.extend({
-      success : function() {
+      done : function() {
         return this.then.apply(this, arguments);
       },
-      complete : function() {
+      always : function() {
         return this.done.apply(this, arguments);
       },
-      error : function() {
+      fail : function() {
         return this.fail.apply(this, arguments);
       }
     }, d.promise());

@@ -151,7 +151,6 @@
     return false;
   }
 
-
   window.timelinebindsingle = function(jobj) {
     jobj.off().hover(timelinebind_tweet_hover1, timelinebind_tweet_hover2);
     //jobj.click(function(){alert(this.raw.type + '\n' + JSON.stringify(this.raw));});
