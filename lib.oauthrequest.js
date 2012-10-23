@@ -22,7 +22,7 @@ var Koauth = Class.extend({
   },
   loadFromString : function(xstring) {
     var tmp = JSON.parse(xstring);
-    if(true) {
+    if (true) { // lol... what's this!!! by whentp.
       this.consumerKey = tmp[0];
       this.consumerSecret = tmp[1];
       this.requestParams = tmp[2];
@@ -42,7 +42,7 @@ var Koauth = Class.extend({
       //console.dir(data);
       root.accessParams = {};
       var qvars_tmp = data.split('&');
-      for(var i = 0; i < qvars_tmp.length; i++) {
+      for (var i = 0; i < qvars_tmp.length; i++) {
         var y = qvars_tmp[i].split('=');
         root.accessParams[y[0]] = decodeURIComponent(y[1]);
       }

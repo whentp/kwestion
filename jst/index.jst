@@ -1,0 +1,258 @@
+/* timeline_template */
+<table class="twitter-item{{if user && user.screen_name == myname}} me{{/if}}" cellpadding="0">
+	<tr>
+		<td class="avatar people_op" rowspan="2"><img src="${user.profile_image_url}" alt="${user.screen_name}" tid="${id}" /></td>
+		<td class="screen_name"><a title="${user.name}">${user.screen_name}</a>
+			{{if geo}}<a class="smallmap" href="#" long="${geo.coordinates[1]}" lat="${geo.coordinates[0]}"><img src="geo.png" /></a>{{/if}}
+		</td>
+		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+	</tr>
+	<tr>
+		<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}</td>
+	</tr>
+</table>
+
+/* timeline_template_dm */
+<table class="twitter-item" cellpadding="0">
+	<tr>
+		<td class="avatar people_op" rowspan="2"><img src="${sender.profile_image_url}" alt="${sender.screen_name}" tid="${id}" /></td>
+		<td class="screen_name"><a title="${sender.name}">${sender.screen_name}</a></td>
+		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+	</tr>
+	<tr>
+		<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}</td>
+	</tr>
+</table>
+
+/* timeline_template_sina */
+<table class="twitter-item{{if user && user.screen_name == myname}} me{{/if}}" cellpadding="0">
+	<tr>
+		<td class="avatar people_op" rowspan="2" style="border-left:#ff0000 solid 5px;"><img src="${user.profile_image_url}" alt="${user.screen_name}" tid="${id}" /></td>
+		<td class="screen_name"><a title="${user.name}">${user.screen_name}</a></td>
+		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+	</tr>
+	<tr>
+		<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}
+			{{if retweeted_status}}
+			<div style="border:1px dotted black; margin:2px; padding:2px">
+				<img src="${retweeted_status.user.profile_image_url}" height="24" width="24">${retweeted_status.user.screen_name}:
+				{{html retweeted_status.text}}</div>
+			{{/if}}
+		</td>
+	</tr>
+</table>
+
+/* toolbar_sina */
+<ul class="dropdown">
+	<li>
+	<a href="#" title="Reply. Press Ctrl to reply to all." class="reply">Reply</a>
+	<ul class="sub_menu">
+		<li><a href="#" class="reply">Single</a></li>
+		<li><a href="#" class="reply multiple">Multiple</a></li>
+	</ul>
+	</li>
+	<li>
+	<a href="#" class="retweet">RT</a>
+	</li>
+	<li class="dm">
+	<a href="#" class="dm">DM</a>
+	</li>
+	<li class="inreplyto" style="display:none;">
+	<a href="#" class="showthread">In reply to</a>
+	</li>
+	<li>
+	<a href="#">Other</a>
+	<ul class="sub_menu">
+		<li class="del" style="display:none;"><a href="#" class="del">Delete</a></li>
+		<li><a href="#" class="fav">Favorite</a></li>
+	</ul>
+	</li>
+</ul>
+
+/* timeline_template_follower */
+<table class="twitter-item" cellpadding="0">
+	<tr>
+		<td class="avatar people_op" rowspan="2"><img src="${profile_image_url}" alt="${screen_name}" tid="${id}" /></td>
+		<td class="screen_name"><a title="${name}">${screen_name}</a></td>
+		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+	</tr>
+	<tr>
+		<td class="content" colspan="2">
+			<div>Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+			${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button foerbutton">${followers_count}</a> follower. He/she is following <a href="#" class="button foingbutton">${friends_count}</a> people. His/Her URL is <a href="${url}" target="_blank">${url}</a></td>
+	</tr>
+</table>
+
+/* timeline_template_following */
+<table class="twitter-item" cellpadding="0">
+	<tr>
+		<td class="avatar people_op" rowspan="2"><img src="${profile_image_url}" alt="${screen_name}" tid="${id}" /></td>
+		<td class="screen_name"><a title="${name}">${screen_name}</a></td>
+		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
+	</tr>
+	<tr>
+		<td class="content" colspan="2">
+			<div>Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+			${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="button foerbutton">${followers_count}</a> follower. He/she is following <a href="#" class="button foingbutton">${friends_count}</a> people. His/Her URL is <a href="${url}" target="_blank">${url}</a></td>
+	</tr>
+</table>
+
+/* userinfo */
+{{if screen_name!=myname}}
+<div><a href='#' class='button followbutton'>{{if following}}Unfollow{{else}}Follow{{/if}}</a> Registered: ${parsetime(parsedatestr(created_at))}, rank: ${Math.floor(Math.exp(21-1.1*Math.log(followers_count)))}</div>
+{{/if}}
+<div>Bio: ${description}</div>
+<div>${screen_name}(${name}) has ${statuses_count} tweets ( ${Math.round(statuses_count/(new Date() - parsedatestr(created_at))  * 3600000 * 24 )} per day), <a href="#" class="foerbutton button">${followers_count}</a> follower. He/she is following <a href="#" class="foingbutton button">${friends_count}</a> people. His/Her URL is <a href="${url}" target="_blank">${url}</a></div>
+
+/* headbar */
+<a href="https://github.com/whentp/kwestion/" target="_blank"><img src="kwestion_link.png" /></a>
+<a href="#" id="setprofilebutton">${myname}</a>
+<em>${statuses_count}</em>
+<span id="toolbarcollapse">{{if storage.toolbarcollapse=='yes'}}&raquo;{{else}}&laquo;{{/if}}</span>
+<span {{if storage.toolbarcollapse=='yes'}}class="toolbar_collapse"{{/if}}>
+	<a href="#" id="myfoerbutton">Follower</a><em>${followers_count}</em>
+	<a href="#" id="myfoingbutton">Following</a><em>${friends_count}</em>
+</span>
+{{if window.webkitNotifications}}<a href="#" style="color:#ffff00;" id="setnotifybutton">SetNotify</a> {{/if}}
+<a href="#" id="loadsettingbutton">Options</a> <a href="#" id="logoutbutton">Logout</a>
+<input type="range" id="columncount" min="1" max="5" value="${window.localStorage.columncount}"/>
+
+/* ext_edit */
+<div class="clear" style="margin:3px;">
+	<div class="clear" style="text-align:center;">
+		<textarea id="ext-editbox" class="msginputbox" style="height:80px;">${text}</textarea>
+	</div>
+	<div style="padding:5px;">
+		(<span id="ext-editboxcount"></span>)
+		<a href="#" class="a_button" id="ext-sendmsg">Send</a> or
+		<a href="#" class="a_button" id="ext-dosearch">Search</a>
+	</div>
+	<div id='kwestion_tools'>Useful URLs:
+		<a href='http://www.flickr.com/' target='_blank'>flickr</a> |
+		<a href='http://twitpic.com/' target='_blank'>twitpic</a> |
+		<a href='http://tweetphoto.com/' target='_blank'>tweetphoto</a> |
+		<a href='http://img.ly/' target='_blank'>img.ly</a>
+	</div>
+
+</div>
+
+/* rtdialog */
+<div class="clear" style="margin:3px;">
+	<div class="clear" style="text-align:center;">
+		<textarea id="rtmsg" class="msginputbox" style="width:300px;height:100px;"></textarea>
+	</div>
+	<div style="padding:5px;">
+		(<span id="rtmsgcount"></span>)
+		<a href="#" class="a_button" id="rtbutton">Classic Retweet</a> or
+		<a href="#" class="a_button" id="ortbutton">Official Retweet</a>
+	</div>
+</div>
+
+/* threads */
+<div class="clear" style="border:1px dotted #ccc;{{if bold}}font-weight:bold;{{/if}}">
+	<img class="people_op" width="24" height="24" alt="${from.screen_name}" src="${from.profile_image_url}" />
+	${from.screen_name}: {{html parsetext(text)}}
+</div>
+
+/* changeprofile */
+<div class="clear" style="padding:5px;">
+	Bio: <br />
+	<textarea style="border:1px solid #cccccc; width:280px; height:50px;" id="setdescriptionval">${bio}</textarea><br /><a href="#" id="setdescriptionbutton">Change</a>
+</div>
+
+/* toolbar_twitter */
+<ul class="dropdown">
+	<li>
+	<a href="#" title="Reply. Press Ctrl to reply to all." class="reply">Reply</a>
+	<ul class="sub_menu">
+		<li><a href="#" class="reply">Single</a></li>
+		<li><a href="#" class="reply multiple">Multiple</a></li>
+	</ul>
+	</li>
+	<li>
+	<a href="#" class="retweet">RT</a>
+	</li>
+	<li class="dm">
+	<a href="#" class="dm">DM</a>
+	</li>
+	<li class="inreplyto" style="display:none;">
+	<a href="#" class="showthread">In reply to</a>
+	</li>
+	<li>
+	<a href="#">Other</a>
+	<ul class="sub_menu">
+		<li class="del" style="display:none;"><a href="#" class="del">Delete</a></li>
+		<li><a href="#" class="fav">Favorite</a></li>
+	</ul>
+	</li>
+</ul>
+
+/* toolbar_dm */
+<ul class="dropdown">
+	<li class="dm"><a href="#" class="dm">DM</a></li>
+	<li class="del"><a href="#" class='del'>Delete</a></li>
+</ul>
+
+/* toolbar_userlist */
+<ul class="dropdown">
+	<li class="follow"><a href="#" class="follow">Follow</a></li>
+	<li class="block"><a href="#" class="block">Block</a></li>
+</ul>
+
+/* rtdialog */
+<div class="clear" style="margin:3px;">
+	<div class="clear" style="text-align:center;">
+		<textarea id="rtmsg" class="msginputbox" style="width:300px;height:100px;"></textarea>
+	</div>
+	<div style="padding:5px;">
+		(<span id="rtmsgcount"></span>)
+		<a href="#" class="a_button" id="rtbutton">Classic Retweet</a> or
+		<a href="#" class="a_button" id="ortbutton">Official Retweet</a>
+	</div>
+</div>
+
+/* threads */
+<div class="clear" style="border:1px dotted #ccc;{{if bold}}font-weight:bold;{{/if}}">
+	<img class="people_op" width="24" height="24" alt="${from.screen_name}" src="${from.profile_image_url}" />
+	${from.screen_name}: {{html parsetext(text)}}
+</div>
+
+/* pinlogin */
+<div class="pinlogin clear">
+	<p>
+	<b>kwestion</b>
+	</p>
+	<p><b>Step 0</b>. If twitter is banned in your area, click <a href='#' id="initproxysettingbutton">here</a> to set a proxy:</p>
+	<div></div>
+	<p><b>Step 1</b>. Click <a href='#' class="gettwitterpin">here</a> to get a PIN code.</p>
+	<p><b>Step 2</b>. Input your PIN code for <b>${name}</b> </p>
+	<input type="text" id="pinvalue" value="" /> <a href="#" id="sendping">Use this Pin</a>
+</div>
+
+/* sinapinlogin */
+<div class="pinlogin clear">
+	<p><b>Step 1</b>. Click <a href='#' class="gettwitterpin">here</a> to open a new window.<p>
+	<p>&nbsp;</p>
+	<p>Pay attention to the addressbar of the new window. The address will be in the form of 
+	<p style="color:#444">https://github.com/whentp/kwestion?code=<b style="color:#ff0000;"><i>d21fa48247ef4652139dc6643sda7c137742e</i></b>.</p>
+	<p>Please copy and paste the red text in the addressbar of the new window to the following textbox in Step 2.</p>
+	<p>&nbsp;</p>
+	<p><b>Step 2</b>. Paste/input your code (NOT your password!!!) for <b>${name}</b> </p>
+	<input type="text" id="pinvalue" value="" /> <a href="#" id="sendping">Use this Code</a>
+</div>
+
+/* proxysetting */
+<table>
+	<tr><td>API Proxy</td><td><input type="text" value="" id="apiproxy" /></td><td><a title='e.g. https://api.twitter.com/1/'>?</a></td></tr>
+	<tr><td>Search API Proxy</td><td><input type="text" value="" id="searchapiproxy" /></td><td><a title='e.g. http://search.twitter.com/'>?</a></td></tr>
+	<tr><td>OAuth Proxy</td><td><input type="text" value="" id="oauthproxy" /></td><td><a title='e.g. https://twitter.com/oauth/'>?</a></td></tr>
+	<tr><td>Use Proxy</td><td><input type="checkbox" value="true" id="useproxy" /></td><td>&nbsp;</td></tr>
+	<tr><td colspan="3"><a href="#" id="saveproxysetting">Save</a></td></tr>
+</table>
+
+
+/* openuserandlist */
+<div id='openuser_div'><div>Users' IDs(separated by ','):</div><input type="text" id="inputuser" value="" /> <a href='#' id="openuserbutton">open</a></div>
+<div id='openlist_div'><div>List name(name/list):</div><input type="text" id="inputlist" value="" /> <a href='#' id="openlistbutton">open</a></div>
+
+

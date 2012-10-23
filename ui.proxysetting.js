@@ -4,7 +4,7 @@
 var proxysettingui;
 function initproxysetting(selector) {
   var settings = getConfig('twitterproxysetting');
-  if(!settings) {
+  if (!settings) {
     settings = {
       api : '',
       search : '',
@@ -12,7 +12,7 @@ function initproxysetting(selector) {
       use : false
     };
   }
-  if(!proxysettingui)
+  if (!proxysettingui)
     proxysettingui = $(JST.index_proxysetting({}));
   $(selector).append(proxysettingui);
   $('#apiproxy').val(settings.api);
@@ -28,11 +28,12 @@ function initproxysetting(selector) {
       use : $('#useproxy').prop("checked")
     });
     var tmp = getConfig('twitterproxysetting');
-    if(tmp && tmp.use) {
+    if (tmp && tmp.use) {
       k_config.twitter_api_prefix = tmp.api;
       k_config.twitter_search_api_prefix = tmp.search;
-      //k_config.twitter_oauth_api_prefix = 
-      k_config.twitter_oauth_api_proxy_prefix = tmp.oauth;//'https://api.twitter.com/oauth/';
+      //k_config.twitter_oauth_api_prefix =
+      k_config.twitter_oauth_api_proxy_prefix = tmp.oauth;
+      //'https://api.twitter.com/oauth/';
     } else {
       k_config.twitter_api_prefix = 'https://api.twitter.com/1/';
       k_config.twitter_search_api_prefix = 'http://search.twitter.com/';
@@ -50,11 +51,12 @@ function initproxysetting(selector) {
         return 'Click <a href="#" id="initproxysettingbutton">here</a> to set a twitter api proxy.<div></div>';
       },
       init : function() {
-      initproxysetting($("#initproxysettingbutton").next()); return false;
+        initproxysetting($("#initproxysettingbutton").next());
+        return false;
       }
     };
     var tmp = getConfig('twitterproxysetting');
-    if(tmp && tmp.use) {
+    if (tmp && tmp.use) {
       k_config.twitter_api_prefix = tmp.api;
       k_config.twitter_search_api_prefix = tmp.search;
       k_config.twitter_oauth_api_proxy_prefix = tmp.oauth;

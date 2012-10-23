@@ -3,7 +3,7 @@
 
 var WTimeline = Timeline.extend({
   init : function(param) {
-  var root = this;
+    var root = this;
     this.name = param.name;
     this.action = param.action;
     this.user = param.user;
@@ -14,21 +14,21 @@ var WTimeline = Timeline.extend({
     this.type = param.type;
     this.renderTo = null;
 
- this.urls = {
-      'sinahome' : 'http://api.t.sina.com.cn/statuses/home_timeline.json',
-      'sinareply' : 'http://api.t.sina.com.cn/statuses/mentions.json',
-      'dm' : 'http://api.t.sina.com.cn/direct_messages.json?',
-      'sinauser' : 'http://api.t.sina.com.cn/statuses/user_timeline.json?screen_name=' + root.user + '&',
-      'following' : 'http://api.t.sina.com.cn/statuses/friends/' + root.user + '.json',
-      'follower' : 'http://api.t.sina.com.cn/statuses/followers/' + root.user + '.json',
-      'fav' : 'http://api.t.sina.com.cn/favorites/' + root.user + '.json',
-      'rtbyme' : "http://api.t.sina.com.cn/statuses/retweeted_by_me.json",
-      'rttome' : "http://api.t.sina.com.cn/statuses/retweeted_to_me.json",
-      'rtofme' : "http://api.t.sina.com.cn/statuses/retweets_of_me.json",
-      'comment' : 'http://api.t.sina.com.cn/statuses/comments_timeline.json'
+    this.urls = {
+      'sinahome' : 'https://api.weibo.com/2/statuses/home_timeline.json',
+      'sinareply' : 'https://api.weibo.com/2/statuses/mentions.json',
+      'dm' : 'https://api.weibo.com/2/direct_messages.json?',
+      'sinauser' : 'https://api.weibo.com/2/statuses/user_timeline.json?screen_name=' + root.user + '&',
+      'following' : 'https://api.weibo.com/2/statuses/friends/' + root.user + '.json',
+      'follower' : 'https://api.weibo.com/2/statuses/followers/' + root.user + '.json',
+      'fav' : 'https://api.weibo.com/2/favorites/' + root.user + '.json',
+      'rtbyme' : "https://api.weibo.com/2/statuses/retweeted_by_me.json",
+      'rttome' : "https://api.weibo.com/2/statuses/retweeted_to_me.json",
+      'rtofme' : "https://api.weibo.com/2/statuses/retweets_of_me.json",
+      'comment' : 'https://api.weibo.com/2/comments/timeline.json'
     };
 
-    if(param.canclose)
+    if (param.canclose)
       this.canclose = param.canclose;
   },
   getParameters : function() {
@@ -42,65 +42,68 @@ var WTimeline = Timeline.extend({
   },
   check : function(back) {
     var root = this;
-    if(root.working) {
-      //console.log('prevent a duplicated ajax request.');
+    if (root.working) {
       return;
     }
     var params = {};
-    if(this.list.length && !back) {
+    if (this.list.length && !back) {
       params.since_id = this.list[this.list.length - 1].id;
     }
+    params.access_token = sina_access_token;
     root.working = true;
-    ksinareq.ajax({
-      url : root.urls[root.action],//'http://api.t.sina.com.cn/statuses/home_timeline.json',
+    $.ajax({
+      url : root.urls[root.action],
       data : params
     }).done(function(rawdata) {
       root.working = false;
-      var data = rawdata;
+      var data = rawdata.statuses;
+      if (!data) {// for weibo comments
+        data = rawdata.comments;
+      }
       $.each(data, function(a, b) {
         fix32(b);
         b.type = root.type;
-        if(b.source)
+        if (b.source)
           b.source = shortsource(b.source);
         b.processedtext = b.text;
         b.isnew = true;
       });
       // call plugins.
       var newdata = [];
-      for(var i = 0; i < data.length; i++) {
-        if(CallPlugin('filter', data[i], data[i].type)) {
+      for (var i = 0; i < data.length; i++) {
+        if (CallPlugin('filter', data[i], data[i].type)) {
           newdata.push(data[i]);
         }
       }
       data = newdata;
 
-      if(data.length) {
-        var x = data.length; 
+      if (data.length) {
+        var x = data.length;
         var newtmp = root.newesttimestamp;
         //root.list[root.list.length - 1].id;
         var tmpindex = root.renderTo.list.length - 1;
-        for(var i = 0; i < data.length; i++) {
-          if(data[i].id > newtmp) {
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].id > newtmp) {
             //data[i]['isnew'] = true;
             //root.insert(data[i], i);
-            if(root.renderTo) {
+            if (root.renderTo) {
               var tmpdate = parsedatestr(data[i].created_at);
-              while(tmpindex >= 0 && parsedatestr(root.renderTo.list[tmpindex].created_at) > tmpdate) {
+              while (tmpindex >= 0 && parsedatestr(root.renderTo.list[tmpindex].created_at) > tmpdate) {
                 tmpindex--;
               }
               //console.log(tmpindex);
-              if(tmpindex <= 0)
+              if (tmpindex <= 0)
                 break;
               root.renderTo.insert(data[i], root.renderTo.list.length - 1 - tmpindex);
               root.renderTo.unreadcount++;
             }
             document.title = '*** kwestion ***';
-            if(data[i].user) {
+            if (data[i].user) {
               nq.add(data[i].user.profile_image_url, data[i].user.screen_name, data[i].text);
             }
           }
         }
-        if(root.renderTo.unreadcount) {
+        if (root.renderTo.unreadcount) {
           root.renderTo.showExtra();
         }
         var tmp = data[0].id;

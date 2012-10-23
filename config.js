@@ -7,11 +7,7 @@ var k_config = {
   twitter_api_prefix : 'https://api.twitter.com/1/', // all url prefix should end with a slash.
   twitter_search_api_prefix : 'http://search.twitter.com/',
   twitter_oauth_api_prefix : 'https://api.twitter.com/oauth/',
-  twitter_oauth_api_proxy_prefix: 'https://api.twitter.com/oauth/',
-
-  sina_consumer_key : '2543274311',
-  sina_consumer_secret : 'e87c4ea3e711d2bc127d01afd2a3c12b',
-  sina_api_prefix : 'http://api.t.sina.com.cn/'
+  twitter_oauth_api_proxy_prefix : 'https://api.twitter.com/oauth/',
 };
 
 function GenerateAddPrefix(xstr) {

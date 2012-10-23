@@ -9,8 +9,8 @@ var KFloatToolbar = Class.extend({
   getToolbar : function(name) {
     var root = this;
 
-    if(root.items[name]) {
-      if(root.cached[name]) {
+    if (root.items[name]) {
+      if (root.cached[name]) {
         return {
           template : $(root.cached[name]),
           init : root.items[name].init ? root.items[name].init : function() {
@@ -19,7 +19,7 @@ var KFloatToolbar = Class.extend({
       } else {
         var selector = JST['index_' + root.items[name].template]({});
         //console.log(selector);
-        if($(selector).size() > 0) {
+        if ($(selector).size() > 0) {
           root.cached[name] = selector;
           $.each(root.items[name].actions, function(a, b) {
             selector.find('a.' + a).click(b);
@@ -53,11 +53,16 @@ toolbarpool.items.twitter = {
     fav : function() {
       favoritetweet(this, toolbarpool.raw);
       return false;
+    },
+    dm : function() {
+      in_reply_to = false;
+      $("#message").val("d " + toolbarpool.raw.user.screen_name + " ").focus();
+      return false;
     }
   },
   template : 'toolbar_twitter',
   init : function(jobj, raw) {
-    if(raw.in_reply_to_status_id && raw.in_reply_to_status_id != '') {
+    if (raw.in_reply_to_status_id && raw.in_reply_to_status_id != '') {
       $(jobj).find('li.inreplyto').show(0);
       $(jobj).find('.showthread').text(raw.in_reply_to_screen_name).off().click(function() {
         showthread(this, raw);
@@ -65,7 +70,7 @@ toolbarpool.items.twitter = {
     } else {
       $(jobj).find('li.inreplyto').css('display', 'none');
     }
-    if(raw.user.screen_name == myname) {
+    if (raw.user.screen_name == myname) {
       $(jobj).find('li.del').show(0);
     } else {
       $(jobj).find('li.del').css('display', 'none');
@@ -107,7 +112,7 @@ toolbarpool.items.following = toolbarpool.items.follower = {
   },
   template : 'toolbar_userlist',
   init : function(jobj, raw) {
-    if(raw.following) {
+    if (raw.following) {
       $(jobj).find('a.follow').text('Unfollow');
     } else {
       $(jobj).find('a.follow').text('Follow');

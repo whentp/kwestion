@@ -527,19 +527,19 @@ a.opentab {
 .retweet_status span {
 	font-weight: bold;
 }
-.pinlogin{
+.pinlogin {
 	width: 100%;
 	height: 320px;
 	padding: 20px;
 	vertical-align: middle;
 }
 
-#kwestion_tools{
-	padding:3px;
+#kwestion_tools {
+	padding: 3px;
 	width: auto;
 	background: #555;
 	margin: 5px 0 0 0;
 }
-#kwestion_tools a{
+#kwestion_tools a {
 	color: #f0dc3b;
 }

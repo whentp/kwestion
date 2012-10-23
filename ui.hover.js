@@ -20,21 +20,21 @@
     };
     $('#people_op, #peopleat_op, #hash_op').unbind().hover(function() {
       var id = $(this).attr('id');
-      if(mouseoverflag[id].timer) {
+      if (mouseoverflag[id].timer) {
         clearTimeout(mouseoverflag[id].timer);
         mouseoverflag[id].timer = null;
       }
     }, function() {
       var id = $(this).attr('id');
       var that = this;
-      if(!mouseoverflag[id].timer) {
+      if (!mouseoverflag[id].timer) {
         mouseoverflag[id].timer = setTimeout(function() {
           $(that).fadeOut();
         }, 1000);
       }
     });
     $('a.openhome').click(function() {
-      opentab(mouseoverInfo.user, 'user', mouseoverInfo.user, 'user', frame.items.length - 1);      
+      opentab(mouseoverInfo.user, 'user', mouseoverInfo.user, 'user', frame.items.length - 1);
       return false;
     });
     $('a.openhashtag').click(function() {
@@ -104,14 +104,14 @@
 
   function clearmouseovertimer() {
     var id = -1;
-    if($(this).hasClass('people_op'))
+    if ($(this).hasClass('people_op'))
       id = 'people_op';
-    else if($(this).hasClass('peopleat_op'))
+    else if ($(this).hasClass('peopleat_op'))
       id = 'peopleat_op';
-    else if($(this).hasClass('hash_op') || $(this).hasClass('hashtag'))
+    else if ($(this).hasClass('hash_op') || $(this).hasClass('hashtag'))
       id = 'hash_op';
 
-    if(mouseoverflag[id].timer) {
+    if (mouseoverflag[id].timer) {
       clearTimeout(mouseoverflag[id].timer);
       mouseoverflag[id].timer = null;
     }
@@ -119,15 +119,15 @@
 
   function setmouseovertimer() {
     var id = -1;
-    if($(this).hasClass('people_op'))
+    if ($(this).hasClass('people_op'))
       id = 'people_op';
-    else if($(this).hasClass('peopleat_op'))
+    else if ($(this).hasClass('peopleat_op'))
       id = 'peopleat_op';
-    else if($(this).hasClass('hash_op') || $(this).hasClass('hashtag'))
+    else if ($(this).hasClass('hash_op') || $(this).hasClass('hashtag'))
       id = 'hash_op';
 
     var that = this;
-    if(!mouseoverflag[id].timer) {
+    if (!mouseoverflag[id].timer) {
       mouseoverflag[id].timer = setTimeout(function() {
         $('#' + id).fadeOut();
       }, 1000);
@@ -150,6 +150,7 @@
     $(this).find('.time').css('display', 'inline');
     return false;
   }
+
 
   window.timelinebindsingle = function(jobj) {
     jobj.off().hover(timelinebind_tweet_hover1, timelinebind_tweet_hover2);

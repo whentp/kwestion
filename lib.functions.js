@@ -5,8 +5,8 @@ var userinfo = {};
 
 var Kinit = function() {
   $('body').append($(['<div class="bottom-loader"></div>', "<div id='wait' style='display:none'><img src='loader.gif' style='margin:10 0;' /></div>", // finished.
-    "<div id='dialog'></div>", // finished.
-    "<div id='dialogbackground'></div>", '<div id="msgbox" class="s_clear" style="display:none;">', '<div id="msgboxhead">kwestion</div>', '<div id="msgboxbody" class="s_clear"></div>', '</div>'].join('')));
+  "<div id='dialog'></div>", // finished.
+  "<div id='dialogbackground'></div>", '<div id="msgbox" class="s_clear" style="display:none;">', '<div id="msgboxhead">kwestion</div>', '<div id="msgboxbody" class="s_clear"></div>', '</div>'].join('')));
 };
 function sorry() {
   alert('@whentp is VERY lazy.');
@@ -29,7 +29,7 @@ function returntrue() {
 }
 
 function getConfig(key) {
-  if(!storage['kwestion-config-' + key]) {
+  if (!storage['kwestion-config-' + key]) {
     return '';
   }
   return JSON.parse(storage['kwestion-config-' + key]);
@@ -75,11 +75,11 @@ function simpledialog(html, callback, offset, width, onsimpledialogclose) {
   $('#dialogbackground').show(0).off().click(function() {
     $('#dialog').fadeOut(200);
     $(this).fadeOut(200);
-    if(onsimpledialogclose) {
+    if (onsimpledialogclose) {
       onsimpledialogclose();
     }
   });
-  if(offset.left < 1)
+  if (offset.left < 1)
     offset.left = 1;
   $('#dialog').css({
     'display' : 'block',
@@ -87,13 +87,13 @@ function simpledialog(html, callback, offset, width, onsimpledialogclose) {
     'top' : offset.top,
     'left' : offset.left
   }).html(html);
-  if(callback)
+  if (callback)
     callback();
   setTimeout(function() {
     $('#dialog').fadeIn(200);
     var tmpheight = $('#dialog').height();
-    if(tmpheight + offset.top > $(window).height()) {
-      if(tmpheight < $(window).height()) {
+    if (tmpheight + offset.top > $(window).height()) {
+      if (tmpheight < $(window).height()) {
         offset.top = $(window).height() - tmpheight;
       } else {
         offset.top = 10;
@@ -115,7 +115,7 @@ function simpledialog(html, callback, offset, width, onsimpledialogclose) {
 function formattimespans() {
   $('span.time').each(function() {
     var obj = $(this);
-    if(obj.attr('time') && obj.attr('time') != '') {
+    if (obj.attr('time') && obj.attr('time') != '') {
       obj.html(parsetime(parsedatestr(obj.attr('time'))));
     }
   });
@@ -126,20 +126,20 @@ function parsedatestr(sss) {
 }
 
 function fix32(item) {
-  if(item.id_str) {
+  if (item.id_str) {
     item.id = item.id_str;
   }
-  if(item.in_reply_to_status_id_str) {
+  if (item.in_reply_to_status_id_str) {
     item.in_reply_to_status_id = item.in_reply_to_status_id_str;
   }
-  if(item.retweeted && item.retweeted_status && item.retweeted_status.id_str) {
+  if (item.retweeted && item.retweeted_status && item.retweeted_status.id_str) {
     item.retweeted_status.id = item.retweeted_status.id_str;
   }
 }
 
 function gt(a, b) {
   //console.log([a,b])
-  if(a.length == b.length) {
+  if (a.length == b.length) {
     return a > b;
   } else {
     return a.length > b.length;
@@ -147,7 +147,7 @@ function gt(a, b) {
 }
 
 function lt(a, b) {
-  if(a.length == b.length) {
+  if (a.length == b.length) {
     return a < b;
   } else {
     return a.length < b.length;
@@ -156,9 +156,9 @@ function lt(a, b) {
 
 jQuery.extend({
   unselectContents : function() {
-    if(window.getSelection)
+    if (window.getSelection)
       window.getSelection().removeAllRanges();
-    else if(document.selection)
+    else if (document.selection)
       document.selection.empty();
   }
 });
@@ -167,21 +167,21 @@ jQuery.fn.extend({
     $(this).each(function(i) {
       var node = this;
       var selection, range, doc, win;
-      if(( doc = node.ownerDocument) && ( win = doc.defaultView) && typeof win.getSelection != 'undefined' && typeof doc.createRange != 'undefined' && ( selection = window.getSelection()) && typeof selection.removeAllRanges != 'undefined') {
+      if (( doc = node.ownerDocument) && ( win = doc.defaultView) && typeof win.getSelection != 'undefined' && typeof doc.createRange != 'undefined' && ( selection = window.getSelection()) && typeof selection.removeAllRanges != 'undefined') {
         range = doc.createRange();
         range.selectNode(node);
-        if(i == 0) {
+        if (i == 0) {
           selection.removeAllRanges();
         }
         selection.addRange(range);
-      } else if(document.body && typeof document.body.createTextRange != 'undefined' && ( range = document.body.createTextRange())) {
+      } else if (document.body && typeof document.body.createTextRange != 'undefined' && ( range = document.body.createTextRange())) {
         range.moveToElementText(node);
         range.select();
       }
     });
   },
   setCaret : function() {
-    if(!$.browser.msie)
+    if (!$.browser.msie)
       return;
     var initSetCaret = function() {
       var textObj = $(this).get(0);
@@ -191,10 +191,10 @@ jQuery.fn.extend({
   },
   insertAtCaret : function(textFeildValue) {
     var textObj = $(this).get(0);
-    if(document.all && textObj.createTextRange && textObj.caretPos) {
+    if (document.all && textObj.createTextRange && textObj.caretPos) {
       var caretPos = textObj.caretPos;
       caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == '' ? textFeildValue + '' : textFeildValue;
-    } else if(textObj.setSelectionRange) {
+    } else if (textObj.setSelectionRange) {
       var rangeStart = textObj.selectionStart;
       var rangeEnd = textObj.selectionEnd;
       var tempStr1 = textObj.value.substring(0, rangeStart);
@@ -210,16 +210,16 @@ jQuery.fn.extend({
   }
 });
 
-if(!Array.prototype.indexOf) {
+if (!Array.prototype.indexOf) {
   Array.prototype.indexOf = function(elem) {
     var len = this.length;
     var from = Number(arguments[1]) || 0;
     from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-    if(from < 0) {
+    if (from < 0) {
       from += len;
     }
-    for(; from < len; from++) {
-      if( from in this && this[from] === elem) {
+    for (; from < len; from++) {
+      if ( from in this && this[from] === elem) {
         return from;
       }
     }
@@ -227,20 +227,20 @@ if(!Array.prototype.indexOf) {
   };
 }
 
-if(!Array.prototype.remove) {
+if (!Array.prototype.remove) {
   Array.prototype.remove = function(elem) {
     var index = this.indexOf(elem);
-    if(index !== -1) {
+    if (index !== -1) {
       this.splice(index, 1);
     }
   };
 }(function() {
   var short_url_pool = {};
   window.shortsource = function(url) {
-    if(!short_url_pool[url] || short_url_pool[url] == '') {
-      if(url.length > 1 && url[0] == '<') {
+    if (!short_url_pool[url] || short_url_pool[url] == '') {
+      if (url.length > 1 && url[0] == '<') {
         var x = url.split('"').join("'").split("'").join('>').split('>').join('<').split('<');
-        if(x.length <= 1)
+        if (x.length <= 1)
           return url;
         var b = x[x.length - 3];
         var c = b.length > 12 ? (b.substr(0, 9) + '..') : b;
@@ -276,8 +276,8 @@ function parsetime(toTime) {
   // 格式
   var forTime;
 
-  if(Math.floor(offset / SecMilli) < 0) {
-    if(Math.floor(offset / MinMilli) < -15) {
+  if (Math.floor(offset / SecMilli) < 0) {
+    if (Math.floor(offset / MinMilli) < -15) {
       now.setHours(0, 0, 0, 0);
       toTime.setHours(0, 0, 0, 0);
       offset = now.getTime() - toTime.getTime();
@@ -286,20 +286,20 @@ function parsetime(toTime) {
       toMonth = toTime.getMonth() + 1;
       toDay = toTime.getDate();
       forTime = toYear + "/" + toMonth + "/" + toDay;
-      if(first === 1)
+      if (first === 1)
         arrayHour = arrayHour.concat(key);
     } else {
       forTime = "Just Now";
-      if(first === 1)
+      if (first === 1)
         arraySecond = arraySecond.concat(key);
     }
-  } else if(Math.floor(offset / SecMilli) < 60) {
+  } else if (Math.floor(offset / SecMilli) < 60) {
     forTime = Math.floor(offset / SecMilli) + "s";
     arraySecond = arraySecond.concat(key);
-  } else if(Math.floor(offset / MinMilli) < 60) {
+  } else if (Math.floor(offset / MinMilli) < 60) {
     forTime = Math.floor(offset / MinMilli) + "m";
     arrayMinute = arrayMinute.concat(key);
-  } else if(Math.floor(offset / HrMilli) < 24) {
+  } else if (Math.floor(offset / HrMilli) < 24) {
     forTime = Math.floor(offset / HrMilli) + "h";
     arrayHour = arrayHour.concat(key);
   } else {
@@ -312,9 +312,9 @@ function parsetime(toTime) {
     var toMonth = toTime.getMonth() + 1;
     var toDay = toTime.getDate();
 
-    if(offsetDy == 1) {
+    if (offsetDy == 1) {
       forTime = "yesterday ";
-    } else if(now.getFullYear() == toYear) {
+    } else if (now.getFullYear() == toYear) {
       forTime = toMonth + "-" + toDay;
     } else {
       forTime = toYear + "-" + toMonth + "-" + toDay;
@@ -345,6 +345,7 @@ function logout() {
   storage['kwestion-config-notify'] = "";
   storage['kwestion-config-oauthstr'] = "";
   storage['kwestion-config-sinaoauthstr'] = "";
+  CallPlugin('onlogout');
   location.reload();
 }
 

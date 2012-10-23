@@ -1,30 +1,56 @@
 // vim:ft=javascript:tabstop=2:shiftwidth=2:softtabstop=2:expandtab
-if(!k_plugins)
+if (!k_plugins)
   var k_plugins = {};
 
 /*Plugin: add prefix and suffix when sending. */
 
 k_plugins.basic = {
   filter : function(msg, type) {
-    if(msg.processedtext) {
+    if (msg.processedtext) {
       var inputText = msg.processedtext;
       var replaceText, replacePattern1, replacePattern2, replacePattern3;
       replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-      replacedText = inputText.replace(replacePattern1, '<a target="_blank" href="$1">$1</a>');
+      replacedText = inputText.replace(replacePattern1, '<a target="_blank" class="unprocessedlink" href="$1">$1</a>');
       replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-      replacedText = replacedText.replace(replacePattern2, '$1<a target="_blank" href="http://$2">$2</a>');
-      replacePattern3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
-      replacedText = replacedText.replace(replacePattern3, '<a target="_blank" href="mailto:$1">$1</a>');
+      replacedText = replacedText.replace(replacePattern2, '$1<a target="_blank" class="unprocessedlink" href="http://$2">$2</a>');
+      replacePattern3 = / (\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+      replacedText = replacedText.replace(replacePattern3, ' <a target="_blank" class="unprocessedlink" href="mailto:$1">$1</a>');
       msg.processedtext = replacedText;
     }
-    if(msg.retweeted_status) {
+    if (msg.retweeted_status) {
       msg.processedtext += '<div class="retweet_status">This is an official retweet' + (msg.retweet_count ? (' <span>(' + msg.retweet_count + (msg.retweet_count < 2 ? ' time' : ' times') + ')') : '') + '</span>.</div>';
     }
     return true;
   },
-  name: 'Basic',
-  ui: function(){
+  name : 'Basic',
+  ui : function() {
     return "Click <a href='https://github.com/whentp/kwestion/issues' target='_blank' style='color:red;font-weight:bold;'>here</a> to report bugs. Current Version: " + k_config.version;
+  },
+  onaddtweet : function(tweetobj) {
+    var previewimg = function(urlstr) {
+      return urlstr.replace(/http:\/\/instagr.am\/p\/([\d\w]+?)\//ig, 'http://instagr.am/p/$1/<div style="border:1px solid #ccc; background:#eee;display:block;margin:2px; padding:3px; text-align:center;"><img src="http://instagr.am/p/$1/media/?size=t" /></div>');
+    }
+
+    tweetobj.find('a.unprocessedlink').each(function() {
+      var url = $.trim(this.innerHTML);
+      if (url.indexOf('/t.co/') >= 0) {
+        if (!window.longurlcache)
+          window.longurlcache = {};
+        if (longurlcache[url]) {
+          this.innerHTML = previewimg(longurlcache[url]);
+          $(this).attr('href', url);
+        } else {
+          var root = this;
+          $.get('http://www.longurlplease.com/api/v1.1', {
+            q : url
+          }, function(data) {
+            longurlcache[url] = data[url];
+            root.innerHTML = previewimg(longurlcache[url]);
+            $(root).attr('href', url);
+          }, 'json');
+        }
+      }
+    });
   }
 };
 
@@ -77,40 +103,20 @@ k_plugins.filter_content = {
   },
   filter : function(msg, type) {
     var xxx = getConfig('filter_content').split("\n");
-    if(!xxx.length)
+    if (!xxx.length)
       return true;
-    for(var i = xxx.length - 1; i >= 0; i--) {
+    for (var i = xxx.length - 1; i >= 0; i--) {
       var ttt = $.trim(xxx[i]);
-      if(ttt.length && msg.text && msg.text.indexOf(ttt) >= 0)
+      if (ttt.length && msg.text && msg.text.indexOf(ttt) >= 0)
         return false;
     }
     xxx = getConfig('filter_content_id').split("\n");
-    if(!xxx.length)
+    if (!xxx.length)
       return true;
-    for(var i = xxx.length - 1; i >= 0; i--) {
+    for (var i = xxx.length - 1; i >= 0; i--) {
       var ttt = $.trim(xxx[i]).toLowerCase();
-      if(ttt.length && ((msg.user && msg.user.screen_name && msg.user.screen_name.toLowerCase() == ttt) || (msg.from_user && msg.from_user.toLowerCase() == ttt)))
+      if (ttt.length && ((msg.user && msg.user.screen_name && msg.user.screen_name.toLowerCase() == ttt) || (msg.from_user && msg.from_user.toLowerCase() == ttt)))
         return false;
-    }
-    return true;
-  }
-};
-
-/*Plugin: images' thumbs. */
-k_plugins.imgpreview = {
-  name : 'Preview images',
-  ui : function() {
-    return 'Working...';
-  },
-  init : function() {
-
-  },
-  filter : function(msg, type) {
-    if(msg.processedtext) {
-      msg.processedtext = ' ' + msg.processedtext.replace(/>http:\/\/instagr.am\/p\/([\d\w]+?)\/</ig, '>http://instagr.am/p/$1/<img src="http://instagr.am/p/$1/media/?size=t" /><');
-      //.replace(/>http:\/\/img.ly\/(.*?)</ig,'>http://img.ly/$1<img src="http://img.ly/show/medium/$1" /><')
-      //.replace(/>http:\/\/picplz.com\/([\d\w]+?)</ig, '>http://picplz.com/$1 <img src="http://picplz.com/$1/thumb/200" /><')
-      //.replace(/>http:\/\/picplz.com\/.*?\/pic\/([\d\w]+?)\/</ig, '>http://picplz.com/$1 <img src="http://picplz.com/$1/thumb/200" /><');
     }
     return true;
   }
@@ -131,39 +137,48 @@ k_plugins.closenotify = {
 k_plugins.sinahometimeline = {
   name : 'Your Weibo Home',
   ui : function() {
-    return ((window.ksinareq && getConfig('sinaoauthstr')) ? 'You have been authorized. ' : 'First click <a href="#" id="sinaauth">Authorize</a>, then ') + '<a href="#" id="startweibobutton">Start</a>. <a href="#" id="stopweibobutton">Stop</a>.';
+    return ((getConfig('sinaaccesstoken')) ? 'You have been authorized. Click to <a href="#" id="sinaunauth">Unauthorize</a>. ' : 'First click <a href="#" id="sinaauth">Authorize</a>, then ') + '<br /><a href="#" id="startweibobutton">Start</a>|<a href="#" id="stopweibobutton">Stop</a>.';
+  },
+  onlogout : function() {
+    window.sina_access_token = null;
+    setConfig('sinaaccesstoken', '');
   },
   init : function() {
     var root = this;
-    $("#sinaauth").click(function() {
-      window.ksinareq = null;
-      var oauthstr = getConfig('sinaoauthstr');
-      if(oauthstr) {
-        ksinareq = new Koauth({});
-        ksinareq.loadFromString(oauthstr);
-      } else {
-        window.ksinareq = new Koauth({
-          consumerKey : k_config.sina_consumer_key,
-          consumerSecret : k_config.sina_consumer_secret
-        });
 
+    $("#sinaunauth").click(function() {
+      root.stop();
+      window.sina_access_token = null;
+      setConfig('sinaaccesstoken', '');
+      $('#dialogbackground').click();
+    });
+
+    $("#sinaauth").click(function() {
+      window.sina_access_token = getConfig('sinaaccesstoken');
+      if (!sina_access_token) {
         simpledialog(JST.index_sinapinlogin({
           name : 'sina weibo'
         }), function() {
           $(".pinlogin").height($(window).height());
           $('a.gettwitterpin').click(function() {
-            ksinareq.requestPin('https://api.weibo.com/oauth2/authorize', function(data) {
-              window.open('https://api.weibo.com/oauth2/authorize?' + data);
-            });
+            window.open('https://api.weibo.com/oauth2/authorize?client_id=2543274311&response_type=code&redirect_uri=http://github.com/whentp/kwestion', '', 500, 400);
           });
           $('#sendping').click(function() {
             var tmppin = $('#pinvalue').val();
-            if(tmppin) {
-              ksinareq.accessByPin('https://api.weibo.com/oauth2/access_token', tmppin, function(data) {
-                setConfig('sinaoauthstr', ksinareq.toString());
+            if (tmppin) {
+              $.post('https://api.weibo.com/oauth2/access_token', {
+                client_id : '2543274311',
+                client_secret : 'e87c4ea3e711d2bc127d01afd2a3c12b',
+                grant_type : 'authorization_code',
+                redirect_uri : 'http://github.com/whentp/kwestion',
+                code : tmppin
+              }, function(data) {
+                //example: {"access_token":"2.00u55642OKswbB6p_HmCf8d83fHe2492525632236se2iJmcsdsdKE","remind_in":"170301","expires_in":170301,"uid":"1465295904"}
+                window.sina_access_token = data.access_token;
+                setConfig('sinaaccesstoken', sina_access_token);
                 $('#dialogbackground').click();
                 root.start();
-              }, function(data) {
+              }, 'json').fail(function(data) {
                 alert('error');
               });
             }
@@ -179,19 +194,24 @@ k_plugins.sinahometimeline = {
     $("#startweibobutton").click(root.start);
     $("#stopweibobutton").click(root.stop);
   },
-  stop: function(){
-setConfig('sinaoauthstr', '');
-clearInterval(window.sinaweibohomeinterval);
-window.sinaweibohomeinterval = null;
-clearInterval(window.sinaweiboreplyinterval);
-window.sinaweiboreplyinterval = null;
-clearInterval(window.sinaweibo_comment_interval);
-window.sinaweibo_comment_interval = null;
+  stop : function() {
+    setConfig('sinaoauthstr', '');
+    clearInterval(window.sinaweibohomeinterval);
+    window.sinaweibohomeinterval = null;
+    clearInterval(window.sinaweiboreplyinterval);
+    window.sinaweiboreplyinterval = null;
+    clearInterval(window.sinaweibo_comment_interval);
+    window.sinaweibo_comment_interval = null;
+    $('#dialogbackground').click();
   },
   start : function() {
-    if(window.sinaweibohomeinterval) {
+    if (window.sinaweibohomeinterval) {
       alert('already start.');
     } else {
+      if (!sina_access_token) {
+        alert('Pls click Authorize.');
+        return;
+      }
       var sinaweibotimeline = new WTimeline({
         name : 'sinahome',
         action : 'sinahome',
@@ -205,7 +225,7 @@ window.sinaweibo_comment_interval = null;
         sinaweibotimeline.check();
       }, 60000);
     }
-    if(window.sinaweiboreplyinterval) {
+    if (window.sinaweiboreplyinterval) {
       alert('already start.');
     } else {
       var sinaweiboreplytimeline = new WTimeline({
@@ -221,7 +241,7 @@ window.sinaweibo_comment_interval = null;
         sinaweiboreplytimeline.check();
       }, 124000);
     }
-    if(window.sinaweibo_comment_interval) {
+    if (window.sinaweibo_comment_interval) {
       alert('already start.');
     } else {
       var sinaweibo_comment_timeline = new WTimeline({
@@ -237,14 +257,12 @@ window.sinaweibo_comment_interval = null;
         sinaweibo_comment_timeline.check();
       }, 123000);
     }
+    $('#dialogbackground').click();
   },
   pageload : function() {
     var root = this;
-    window.ksinareq = null;
-    var oauthstr = getConfig('sinaoauthstr');
-    if(oauthstr) {
-      ksinareq = new Koauth({});
-      ksinareq.loadFromString(oauthstr);
+    window.sina_access_token = getConfig('sinaaccesstoken');
+    if (window.sina_access_token) {
       setTimeout(k_plugins.sinahometimeline.start, 10000);
     }
     return true;

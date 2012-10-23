@@ -24,12 +24,12 @@ function KUIMsgSendBind() {
       'text' : $('#message').val()
     }), function() {
       $('#ext-editbox').width(width - 15).change(count_words).keyup(count_words).keydown(function(e) {
-        if((e.ctrlKey || e.metaKey) && e.which == 13) {
+        if ((e.ctrlKey || e.metaKey) && e.which == 13) {
           keystatus = null;
           $('#ext-sendmsg').click();
           return false;
         }
-        if(e.altKey && e.which == 13) {
+        if (e.altKey && e.which == 13) {
           keystatus = null;
           $('#ext-dosearch').click();
           return false;
@@ -57,7 +57,7 @@ function KUIMsgSendBind() {
 
 function dosearch() {
   var tmphash = $.trim($('#message').val());
-  if(tmphash === '')
+  if (tmphash === '')
     return;
   opentab('Search:' + tmphash, 'hash', tmphash, 'hash', frame.items.length - 1);
   $('#message').val('');
@@ -69,15 +69,15 @@ function sendmsg() {
   var rawmsg = $.trim($('#message').val());
   var x = k_plugins;
   rawmsg = CallPlugin('beforesend', rawmsg);
-  if(!rawmsg || rawmsg.length == 0)
+  if (!rawmsg || rawmsg.length == 0)
     return;
   showwait(true);
 
   var params = {};
   params['status'] = rawmsg;
-  if(in_reply_to)
+  if (in_reply_to)
     params['in_reply_to_status_id'] = in_reply_to;
-  if(getConfig('stopgeoinfo') != 'stop' && tmplong && tmplat) {
+  if (getConfig('stopgeoinfo') != 'stop' && tmplong && tmplat) {
     params.lat = tmplat;
     params['long'] = tmplong;
   }
@@ -93,9 +93,9 @@ function sendmsg() {
     $('#message').val('');
     showwait(false);
     setTimeout(function() {
-      if(rawmsg[0] != 'd') {
+      if (rawmsg[0] != 'd') {
         var tmp = frame.findTimeline('home');
-        if(tmp)
+        if (tmp)
           tmp.check();
         showmsg('Successful.');
       }
@@ -113,9 +113,9 @@ function count_words() {
   var tmpid = '#' + this.id;
   var tmpshowid = '#' + this.id + 'count';
   var x = $(tmpid).val();
-  if(x != null && x.length != null) {
+  if (x != null && x.length != null) {
     $(tmpshowid).text(140 - x.length);
-    if(x.length > 140) {
+    if (x.length > 140) {
       $(tmpid).val(x.substr(0, 140));
       $(tmpshowid).text(0);
     }
@@ -124,29 +124,50 @@ function count_words() {
 
 function updatemyinfo() {
   $('#myinfo').html(JST.index_headbar(myinfo));
-  $('#loadsettingbutton').click(function(){loadsetting(this); return false;});
+  $('#loadsettingbutton').click(function() {
+    loadsetting(this);
+    return false;
+  });
   $('#logoutbutton').click(logout);
-  $('#columncount').change(function(){frame.setColumnCount(this.value);KframeResize();});
-  $('#setnotifybutton').click(function(){requestnotify();return false;});
-  $('#toolbarcollapse').click(function(){toolbarcollapse(this); return false;});
-  $('#setprofilebutton').click(function(){setprofile(this);return false;});
-  $('#myfoerbutton').click(function(){opentab('who fo you', 'follower', myname, 'follower', frame.items.length - 1); return false;});
-  $('#myfoingbutton').click(function(){opentab('you fo who', 'following', myname, 'following', frame.items.length - 1); return false;});
+  $('#columncount').change(function() {
+    frame.setColumnCount(this.value);
+    KframeResize();
+  });
+  $('#setnotifybutton').click(function() {
+    requestnotify();
+    return false;
+  });
+  $('#toolbarcollapse').click(function() {
+    toolbarcollapse(this);
+    return false;
+  });
+  $('#setprofilebutton').click(function() {
+    setprofile(this);
+    return false;
+  });
+  $('#myfoerbutton').click(function() {
+    opentab('who fo you', 'follower', myname, 'follower', frame.items.length - 1);
+    return false;
+  });
+  $('#myfoingbutton').click(function() {
+    opentab('you fo who', 'following', myname, 'following', frame.items.length - 1);
+    return false;
+  });
 }
 
 function replymsg(xobj, raw) {
   var obj = $(xobj);
   var user = '@' + raw.user.screen_name;
   in_reply_to = raw.id;
-  if((keystatus && (keystatus.ctrlKey || keystatus.metaKey)) || obj.hasClass('multiple')) {
+  if ((keystatus && (keystatus.ctrlKey || keystatus.metaKey)) || obj.hasClass('multiple')) {
     var tmp = raw.text;
     var retmp = /@([a-z_A-Z0-9]+)/ig;
     var checkdict = {};
     checkdict[user] = true;
     var sb = [user];
     var a;
-    while( a = retmp.exec(tmp)) {
-      if(!checkdict[a[0]] && a[0] != '@' + myname) {
+    while ( a = retmp.exec(tmp)) {
+      if (!checkdict[a[0]] && a[0] != '@' + myname) {
         sb.push(a[0]);
         checkdict[a[0]] = true;
       }
@@ -172,12 +193,12 @@ function showrtdialog(obj, raw) {
   simpledialog(JST.index_rtdialog({}), function() {
     in_reply_to = false;
     $('#rtmsg').change(count_words).keypress(count_words).val('').val('RT @' + raw.user.screen_name + ' ' + unescape(raw.text)).focus().change().keydown(function(e) {
-      if((keystatus.ctrlKey || keystatus.metaKey) && e.which == 13) {
+      if ((keystatus.ctrlKey || keystatus.metaKey) && e.which == 13) {
         keystatus = null;
         $('#rtbutton').click();
         return false;
       }
-      if(e.altKey && e.which == 13) {
+      if (e.altKey && e.which == 13) {
         keystatus = null;
         $('#ortbutton').click();
         return false;
@@ -200,7 +221,7 @@ function showrtdialog(obj, raw) {
 
 function deletetweet(id) {
   // delete regular messages.
-  if(confirm('Are you sure?')) {
+  if (confirm('Are you sure?')) {
     kreq.ajax({
       url : tapistr('statuses/destroy/' + id + '.json'),
       type : 'post'
@@ -209,7 +230,7 @@ function deletetweet(id) {
       myinfo.statuses_count--;
       updatemyinfo();
       $('.twitter-item').each(function() {
-        if(this.raw.id == id) {
+        if (this.raw.id == id) {
           $(this).parent().fadeOut(500);
         }
       });
@@ -221,14 +242,14 @@ function deletetweet(id) {
 
 function deldm(id) {
   // delete direct messages.
-  if(confirm('Are you sure?')) {
+  if (confirm('Are you sure?')) {
     kreq.ajax({
       url : tapistr('direct_messages/destroy/' + id + '.json'),
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
       $('.twitter-item').each(function() {
-        if(this.raw.id == id) {
+        if (this.raw.id == id) {
           $(this).parent().fadeOut(500);
         }
       });
@@ -251,8 +272,8 @@ function showthread(obj, raw) {
     data.bold = true;
     data.from = data.user;
     //$id = $raw->in_reply_to_status_id_str;
-    if(data && !data.error) {
-      if(data) {
+    if (data && !data.error) {
+      if (data) {
         simpledialog(JST.index_threads([data]), false, {
           'top' : offset.top + 14,
           'left' : offset.left + $(obj).width() - w
@@ -268,7 +289,7 @@ function showthread(obj, raw) {
 
 function favoritetweet(obj, raw) {
   var id = raw.id;
-  if(!raw.favorited) {
+  if (!raw.favorited) {
     kreq.ajax({
       url : tapistr('favorites/create/' + id + '.json'),
       type : 'post'
@@ -288,17 +309,17 @@ function favoritetweet(obj, raw) {
 }
 
 function follow(obj, id, callback) {
-  if($.trim($(obj).text()) == 'Follow') {
+  if ($.trim($(obj).text()) == 'Follow') {
     kreq.ajax({
       url : tapistr('friendships/create/' + id + '.json'),
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
       $(obj).text('Unfollow');
-      if(userinfo[id]) {
+      if (userinfo[id]) {
         delete userinfo[id];
       }
-      if(callback)
+      if (callback)
         callback();
     });
   } else {
@@ -308,10 +329,10 @@ function follow(obj, id, callback) {
     }).done(function(data) {
       showmsg('Succeed.');
       $(obj).text('Follow');
-      if(userinfo[id]) {
+      if (userinfo[id]) {
         delete userinfo[id];
       }
-      if(callback)
+      if (callback)
         callback();
     });
   }

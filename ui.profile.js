@@ -18,7 +18,7 @@ function loaduserinfo() {
 
 function setdescription() {
   var x = $('#setdescriptionval').val();
-  if($.trim(x).length) {
+  if ($.trim(x).length) {
     kreq.ajax({
       url : tapistr('account/update_profile.json'),
       data : {
@@ -28,7 +28,7 @@ function setdescription() {
     }).done(function(d) {
       showmsg('OK');
       myinfo = d;
-      if(userinfo[myname]) {
+      if (userinfo[myname]) {
         delete userinfo[myname];
       }
     });
@@ -82,7 +82,7 @@ function addNewTimeline(obj, index) {
     var offset = $(obj).offset();
     var sb = [];
     $.each(mytimelineparameters, function(a, b) {
-      if(!frame.findTimeline(b.action, b.user)) {
+      if (!frame.findTimeline(b.action, b.user)) {
         sb.push('<a href="#" class="opentab" id="', b.action, '_', b.user, '_', b.type, '_button">', this.name, '</a> ');
       }
     });
@@ -94,21 +94,23 @@ function addNewTimeline(obj, index) {
     simpledialog(openuser, false, {
       'top' : offset.top + 20,
       'left' : offset.left
-    }, 200).append(JST.index_openuserandlist({'id': index}));
+    }, 200).append(JST.index_openuserandlist({
+      'id' : index
+    }));
 
-    $('#openuserbutton').click(function(){
+    $('#openuserbutton').click(function() {
       openusers($('#inputuser').val());
       return false;
     });
 
-    $('#openlistbutton').click(function(){
+    $('#openlistbutton').click(function() {
       openlist($('#inputlist').val());
       return false;
     });
 
     $.each(mytimelineparameters, function(a, b) {
-      $('#' + b.action + '_' + b.user + '_' + b.type + '_button').click(function(){
-        opentab(b.name, b.action, b.user, b.type, index); 
+      $('#' + b.action + '_' + b.user + '_' + b.type + '_button').click(function() {
+        opentab(b.name, b.action, b.user, b.type, index);
         return false;
       });
     });
@@ -118,10 +120,10 @@ function addNewTimeline(obj, index) {
 function openusers(index) {
   var abc = $("#inputuser").val();
   var users = abc.replace(/[@ #\t]/ig, '').split(',');
-  if($.trim(abc).length && users.length) {
-    if(users.length) {
+  if ($.trim(abc).length && users.length) {
+    if (users.length) {
       $.each(users, function(a, b) {
-        if(!frame.findTimeline('user', b)) {
+        if (!frame.findTimeline('user', b)) {
           opentab(b, 'user', b, 'user', index);
         }
       });
@@ -132,8 +134,8 @@ function openusers(index) {
 
 function openlist(index) {
   var abc = $.trim($("#inputlist").val());
-  if(abc.length) {
-    if(!frame.findTimeline('list', abc)) {
+  if (abc.length) {
+    if (!frame.findTimeline('list', abc)) {
       opentab(abc, 'list', abc, 'list', index);
     }
   }
@@ -141,7 +143,7 @@ function openlist(index) {
 }
 
 function toolbarcollapse(obj) {
-  if(getConfig('toolbarcollapse') != 'yes') {
+  if (getConfig('toolbarcollapse') != 'yes') {
     setConfig('toolbarcollapse', 'yes');
     $(obj).html('&raquo;').next().addClass("toolbar_collapse");
   } else {
@@ -154,8 +156,11 @@ function setprofile(obj) {
   var offset = $(obj).offset();
   simpledialog(JST.index_changeprofile({
     bio : myinfo.description
-  }), function(){
-  $('#setdescriptionbutton').click(function(){setdescription(); return false;});
+  }), function() {
+    $('#setdescriptionbutton').click(function() {
+      setdescription();
+      return false;
+    });
   }, offset, 320);
 }
 
@@ -165,7 +170,7 @@ function opentab(name, action, user, type, index) {
     'reply' : true
   };
   //console.log(frame.findTimeline(action, user), action, user);
-  if(frame.findTimeline(action, user)) {
+  if (frame.findTimeline(action, user)) {
     alert('You have already created a timeline.');
     return;
   }

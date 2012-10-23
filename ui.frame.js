@@ -7,26 +7,26 @@ function KframeResizeInit() {
   });
   setInterval(function() {
     var tmptimeline = frame.findTimeline('home');
-    if(tmptimeline) {
+    if (tmptimeline) {
       tmptimeline.check();
     }
   }, 60000);
   setInterval(function() {
     var tmptimeline = frame.findTimeline('reply');
-    if(tmptimeline) {
+    if (tmptimeline) {
       tmptimeline.check();
     }
   }, 120000);
   setInterval(function() {
     var tmptimeline = frame.findTimeline('dm');
-    if(tmptimeline) {
+    if (tmptimeline) {
       tmptimeline.check();
     }
   }, 180000);
   setInterval(function() {
     $.each(frame.items, function(a, b) {
       $.each(b.items, function(c, d) {
-        if(d.type != 'home' && d.type != 'reply' && d.type != 'dm' && d.user != myname) {
+        if (d.type != 'home' && d.type != 'reply' && d.type != 'dm' && d.user != myname) {
           d.check();
         }
       });
@@ -36,7 +36,7 @@ function KframeResizeInit() {
     formattimespans();
     $.each(frame.items, function(a, b) {
       $.each(b.items, function(c, d) {
-          d.working = false;
+        d.working = false;
       });
     });
   }, 120000);
@@ -49,13 +49,13 @@ function KframeResize() {
   $("#columncount").attr('max', tmpcount);
   $('div.panel').height(windowheight - 56).width(windowwidth / frame.items.length);
   $('div.k-list').height(windowheight - 56 - 60);
-  if((windowwidth / frame.items.length < 320) && frame.items.length > 1) {
+  if ((windowwidth / frame.items.length < 320) && frame.items.length > 1) {
     frame.setColumnCount(frame.items.length - 1);
   }
   //console.log(windowheight - 200);
 }
 
-if(navigator && navigator.geolocation) {
+if (navigator && navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function(p) {
     tmplat = p.coords.latitude;
     tmplong = p.coords.longitude;

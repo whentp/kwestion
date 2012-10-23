@@ -18,9 +18,10 @@ var onAddList = function() {
   frame.save();
 };
 
-var tapistr = function(urlsuffix){
-  var url = {'url': 'https://api.twitter.com/1/' + urlsuffix,
-    proxy: k_config.twitter_api_prefix + urlsuffix
+var tapistr = function(urlsuffix) {
+  var url = {
+    'url' : 'https://api.twitter.com/1/' + urlsuffix,
+    proxy : k_config.twitter_api_prefix + urlsuffix
   };
   return url;
 };
@@ -31,7 +32,7 @@ function checklogin() {
   CallPlugin('pageload');
 
   var oauthstr = getConfig('oauthstr');
-  if(oauthstr) {
+  if (oauthstr) {
     kreq = new Koauth({});
     kreq.loadFromString(oauthstr);
     init();
@@ -45,14 +46,17 @@ function checklogin() {
       name : 'twitter'
     }), function() {
       $(".pinlogin").height($(window).height());
-      $("#initproxysettingbutton").click(function(){
+      $("#initproxysettingbutton").click(function() {
         initproxysetting($(this).parent().next());
         return false;
       });
       $('a.gettwitterpin').click(function() {
         var url = 'https://api.twitter.com/oauth/request_token';
-        if(k_config.twitter_oauth_api_proxy_prefix){
-          url = {'url':'https://api.twitter.com/oauth/request_token', proxy: k_config.twitter_oauth_api_proxy_prefix + 'request_token'};
+        if (k_config.twitter_oauth_api_proxy_prefix) {
+          url = {
+            'url' : 'https://api.twitter.com/oauth/request_token',
+            proxy : k_config.twitter_oauth_api_proxy_prefix + 'request_token'
+          };
         }
         kreq.requestPin(url, function(data) {
           window.open(k_config.twitter_oauth_api_proxy_prefix + 'authorize?' + data);
@@ -60,7 +64,7 @@ function checklogin() {
       });
       $('#sendping').click(function() {
         var tmppin = $('#pinvalue').val();
-        if(tmppin) {
+        if (tmppin) {
           kreq.accessByPin(k_config.twitter_oauth_api_proxy_prefix + 'access_token', tmppin, function(data) {
             setConfig('oauthstr', kreq.toString());
             $('#dialogbackground').click();
@@ -80,6 +84,7 @@ function checklogin() {
 }
 
 function init() {
+  $('#logoutbutton').click(logout);
   KUIMsgSendBind();
   loaduserinfo();
   bindmouseover();
@@ -90,7 +95,9 @@ function init() {
 
   frame.load();
   KframeResize();
-  setTimeout(function(){$(window).resize();}, 100);
+  setTimeout(function() {
+    $(window).resize();
+  }, 100);
 }
 
 $(checklogin);
