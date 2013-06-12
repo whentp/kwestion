@@ -8,7 +8,16 @@
 		<td class="tools"><div class="source">{{html source}}</div><span class="time" time=" ${created_at}">${parsetime(parsedatestr(created_at))}</span></td>
 	</tr>
 	<tr>
-		<td class="content{{if isnew}} unread{{/if}}" colspan="2">{{html parsetext(processedtext)}}</td>
+		<td class="content{{if isnew}} unread{{/if}}" colspan="2">
+			{{html parsetext(processedtext)}}
+			{{if entities && entities.media}}
+			{{each(i,m) entities.media}}
+			{{if m.type=="photo"}}
+			<img src="${m.media_url_https}" width="${m.sizes.small.w}" height="${m.sizes.small.h}" />
+			{{/if}}
+			{{/each}}
+			{{/if}}
+		</td>
 	</tr>
 </table>
 

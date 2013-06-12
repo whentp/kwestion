@@ -25,7 +25,7 @@ var TwitterTimelineBase = Timeline.extend({
       'rttome' : tapistr("statuses/retweeted_to_me.json"),
       'rtofme' : tapistr("statuses/retweets_of_me.json"),
       'list' : tapistr(listtmp[0] + '/lists/' + listtmp[1] + '/statuses.json'),
-      'hash' : k_config.twitter_search_api_prefix + 'search.json'
+      'hash' : tapistr("search/tweets.json")
     };
     if (param.canclose)
       this.canclose = param.canclose;
@@ -241,28 +241,27 @@ var HashTTimeline = TwitterTimelineBase.extend({
       //console.log('prevent a duplicated ajax request.');
       return;
     }
+
     var params = {};
     params.q = root.user;
-    params.page = back ? (Math.ceil(root.list.length / 15) + (((root.list.length % 15) === 0) ? 1 : 0)) : 1;
+
+    if (this.list.length && back) {
+      params.max_id = this.list[0].id;
+    }
+
+    //params.page = back ? (Math.ceil(root.list.length / 15) + (((root.list.length % 15) === 0) ? 1 : 0)) : 1;
     root.working = true;
     kreq.ajax({
       url : root.urls[root.action],
       data : params
     }).done(function(rawdata) {
       root.working = false;
-      var data = $.map(rawdata.results, function(val) {
+      var data = $.map(rawdata.statuses, function(val) {
         var newval = val;
-        newval.user = {
-          screen_name : val.from_user,
-          profile_image_url : val.profile_image_url
-        }
-        if (val.to_user) {
-          newval.in_reply_to_screen_name = val.to_user;
-        }
         newval.processedtext = val.text;
-        newval.source = htmldecode(val.source);
         return newval;
       });
+
       $.each(data, function(a, b) {
         fix32(b);
         b.type = root.action;
