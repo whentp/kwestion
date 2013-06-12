@@ -38,7 +38,7 @@ k_plugins.basic = {
           window.longurlcache = {};
         if (longurlcache[url]) {
           this.innerHTML = previewimg(longurlcache[url]);
-          $(this).attr('href', url);
+          $(this).attr('href', longurlcache[url]);
         } else {
           var root = this;
           $.get('http://www.longurlplease.com/api/v1.1', {
@@ -46,7 +46,7 @@ k_plugins.basic = {
           }, function(data) {
             longurlcache[url] = data[url];
             root.innerHTML = previewimg(longurlcache[url]);
-            $(root).attr('href', url);
+            $(root).attr('href', longurlcache[url]);
           }, 'json');
         }
       }
