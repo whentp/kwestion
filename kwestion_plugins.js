@@ -28,8 +28,6 @@ k_plugins.basic = {
   },
   onaddtweet : function(tweetobj) {
     var previewimg = function(urlstr) {
-      console.log(urlstr);
-      
       var tmp = urlstr.replace(/http:\/\/instagr.am\/p\/([^\/]+?)\//ig, 'http://instagr.am/p/$1/<div style="border:1px solid #ccc; background:#eee;display:block;margin:2px; padding:3px; text-align:center;"><img src="http://instagr.am/p/$1/media/?size=t" /></div>');
 
       tmp = tmp.replace(/http:\/\/instagram.com\/p\/([^\/]+?)\//ig, 'http://instagr.am/p/$1/<div style="border:1px solid #ccc; background:#eee;display:block;margin:2px; padding:3px; text-align:center;"><img src="http://instagr.am/p/$1/media/?size=t" /></div>');
