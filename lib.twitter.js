@@ -15,12 +15,12 @@ var TwitterTimelineBase = Timeline.extend({
     var listtmp = (this.action == 'list') ? this.user.split('/') : ['', ''];
     this.urls = {
       'home' : tapistr('statuses/home_timeline.json'),
-      'reply' : tapistr('statuses/mentions.json'),
+      'reply' : tapistr('statuses/mentions_timeline.json'),
       'dm' : tapistr('direct_messages.json?'),
-      'user' : tapistr('statuses/user_timeline.json?screen_name=' + root.user + '&'),
+      'user' : tapistr('statuses/user_timeline.json'),
       'following' : tapistr('statuses/friends/' + root.user + '.json'),
       'follower' : tapistr('statuses/followers/' + root.user + '.json'),
-      'fav' : tapistr('favorites/' + root.user + '.json'),
+      'fav' : tapistr('favorites/list.json'),
       'rtbyme' : tapistr("statuses/retweeted_by_me.json"),
       'rttome' : tapistr("statuses/retweeted_to_me.json"),
       'rtofme' : tapistr("statuses/retweets_of_me.json"),
@@ -108,6 +108,10 @@ var TTimeline = TwitterTimelineBase.extend({
     if (this.list.length && back) {
       params.max_id = this.list[0].id;
     }
+    if (root.action == 'user' || (root.action == 'fav' && root.user)){
+      params.screen_name = root.user;
+    }
+
     root.working = true;
     kreq.ajax({
       url : root.urls[root.action],

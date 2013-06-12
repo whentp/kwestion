@@ -20,7 +20,7 @@ var onAddList = function() {
 
 var tapistr = function(urlsuffix) {
   var url = {
-    'url' : 'https://api.twitter.com/1/' + urlsuffix,
+    'url' : 'https://api.twitter.com/1.1/' + urlsuffix,
     proxy : k_config.twitter_api_prefix + urlsuffix
   };
   return url;

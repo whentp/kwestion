@@ -180,7 +180,8 @@ function replymsg(xobj, raw) {
 
 function officialrt(obj, id) {
   kreq.ajax({
-    url : tapistr('statuses/retweet/' + id + '.json'),
+    url : tapistr('statuses/retweet.json'),
+    data: {'id': id},
     type : 'post'
   }).done(function(data) {
     showmsg('Official retweet succeed.');
@@ -224,6 +225,7 @@ function deletetweet(id) {
   if (confirm('Are you sure?')) {
     kreq.ajax({
       url : tapistr('statuses/destroy/' + id + '.json'),
+      //data: {'id': id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
@@ -244,7 +246,8 @@ function deldm(id) {
   // delete direct messages.
   if (confirm('Are you sure?')) {
     kreq.ajax({
-      url : tapistr('direct_messages/destroy/' + id + '.json'),
+      url : tapistr('direct_messages/destroy.json'),
+      data: {'id': id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
@@ -291,7 +294,8 @@ function favoritetweet(obj, raw) {
   var id = raw.id;
   if (!raw.favorited) {
     kreq.ajax({
-      url : tapistr('favorites/create/' + id + '.json'),
+      url : tapistr('favorites/create.json'),
+      data:{'id': id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
@@ -299,7 +303,8 @@ function favoritetweet(obj, raw) {
     });
   } else {
     kreq.ajax({
-      url : tapistr('favorites/destroy/' + id + '.json'),
+      url : tapistr('favorites/destroy.json'),
+      data:{'id': id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
@@ -311,7 +316,8 @@ function favoritetweet(obj, raw) {
 function follow(obj, id, callback) {
   if ($.trim($(obj).text()) == 'Follow') {
     kreq.ajax({
-      url : tapistr('friendships/create/' + id + '.json'),
+      url : tapistr('friendships/create.json'),
+      data: {screen_name: id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
@@ -324,7 +330,8 @@ function follow(obj, id, callback) {
     });
   } else {
     kreq.ajax({
-      url : tapistr('friendships/destroy/' + id + '.json'),
+      url : tapistr('friendships/destroy.json'),
+            data: {screen_name: id},
       type : 'post'
     }).done(function(data) {
       showmsg('Succeed.');
