@@ -62,7 +62,7 @@ function addNewTimeline(obj, index) {
     action : 'fav',
     user : myname,
     type : 'twitter'
-  }, {
+  }/*, {
     name : 'My RT',
     action : 'rtbyme',
     user : '',
@@ -72,7 +72,7 @@ function addNewTimeline(obj, index) {
     action : 'rttome',
     user : '',
     type : 'twitter'
-  }, {
+  }*/, {
     name : 'RT of me',
     action : 'rtofme',
     user : '',
@@ -99,12 +99,12 @@ function addNewTimeline(obj, index) {
     }));
 
     $('#openuserbutton').click(function() {
-      openusers($('#inputuser').val());
+      openusers(index);
       return false;
     });
 
     $('#openlistbutton').click(function() {
-      openlist($('#inputlist').val());
+      openlist(index);
       return false;
     });
 

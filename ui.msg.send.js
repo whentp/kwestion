@@ -180,8 +180,7 @@ function replymsg(xobj, raw) {
 
 function officialrt(obj, id) {
   kreq.ajax({
-    url : tapistr('statuses/retweet.json'),
-    data: {'id': id},
+    url : tapistr('statuses/retweet/' + id +'.json'),
     type : 'post'
   }).done(function(data) {
     showmsg('Official retweet succeed.');

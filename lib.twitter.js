@@ -12,19 +12,18 @@ var TwitterTimelineBase = Timeline.extend({
     this.unreadcount = 0;
     this.working = false;
     this.type = param.type;
-    var listtmp = (this.action == 'list') ? this.user.split('/') : ['', ''];
     this.urls = {
       'home' : tapistr('statuses/home_timeline.json'),
       'reply' : tapistr('statuses/mentions_timeline.json'),
       'dm' : tapistr('direct_messages.json?'),
       'user' : tapistr('statuses/user_timeline.json'),
-      'following' : tapistr('statuses/friends/' + root.user + '.json'),
-      'follower' : tapistr('statuses/followers/' + root.user + '.json'),
+      'following' : tapistr('friends/list.json'),
+      'follower' : tapistr('followers/list.json'),
       'fav' : tapistr('favorites/list.json'),
       'rtbyme' : tapistr("statuses/retweeted_by_me.json"),
       'rttome' : tapistr("statuses/retweeted_to_me.json"),
       'rtofme' : tapistr("statuses/retweets_of_me.json"),
-      'list' : tapistr(listtmp[0] + '/lists/' + listtmp[1] + '/statuses.json'),
+      'list' : tapistr("lists/statuses.json"),
       'hash' : tapistr("search/tweets.json")
     };
     if (param.canclose)
@@ -108,8 +107,14 @@ var TTimeline = TwitterTimelineBase.extend({
     if (this.list.length && back) {
       params.max_id = this.list[0].id;
     }
-    if (root.action == 'user' || (root.action == 'fav' && root.user)){
+    if (root.action == 'user' || (root.action == 'fav' && root.user) || root.action == 'following' || root.action == 'follower'){
       params.screen_name = root.user;
+    }
+    if (root.action == 'list'){
+      var listtmp = this.user.split('/');
+      if (listtmp.length < 2) listtmp = ['', ''];
+      params.slug = listtmp[1];
+      params.owner_screen_name = listtmp[0];
     }
 
     root.working = true;
@@ -176,7 +181,6 @@ var TTimeline = TwitterTimelineBase.extend({
               root.klcontainer.initItems(root.list);
           }
         }
-
         root.newesttimestamp = gt(tmp, root.newesttimestamp) ? tmp : root.newesttimestamp;
       }
       if (root.visible())
