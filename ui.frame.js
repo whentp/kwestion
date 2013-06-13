@@ -10,19 +10,19 @@ function KframeResizeInit() {
     if (tmptimeline) {
       tmptimeline.check();
     }
-  }, 60000);
+  }, 60000 * 2);
   setInterval(function() {
     var tmptimeline = frame.findTimeline('reply');
     if (tmptimeline) {
       tmptimeline.check();
     }
-  }, 120000);
+  }, 180000);
   setInterval(function() {
     var tmptimeline = frame.findTimeline('dm');
     if (tmptimeline) {
       tmptimeline.check();
     }
-  }, 180000);
+  }, 240000);
   setInterval(function() {
     $.each(frame.items, function(a, b) {
       $.each(b.items, function(c, d) {
@@ -31,7 +31,7 @@ function KframeResizeInit() {
         }
       });
     });
-  }, 180000);
+  }, 300000);
   setInterval(function() {
     formattimespans();
     $.each(frame.items, function(a, b) {
