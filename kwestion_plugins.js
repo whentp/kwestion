@@ -29,17 +29,25 @@ k_plugins.basic = {
   onaddtweet : function(tweetobj) {
     var previewimg = function(urlstr) {
       var tmp = urlstr.replace(/http:\/\/instagr.am\/p\/([^\/]+?)\//ig, 'http://instagr.am/p/$1/<div style="border:1px solid #ccc; background:#eee;display:block;margin:2px; padding:3px; text-align:center;"><img src="http://instagr.am/p/$1/media/?size=t" /></div>');
-
       tmp = tmp.replace(/http:\/\/instagram.com\/p\/([^\/]+?)\//ig, 'http://instagr.am/p/$1/<div style="border:1px solid #ccc; background:#eee;display:block;margin:2px; padding:3px; text-align:center;"><img src="http://instagr.am/p/$1/media/?size=t" /></div>');
-
       return tmp;
     }
 
+    var raw = tweetobj.get(0).raw;
+    if (!window.longurlcache) window.longurlcache = {};
+    if(raw.entities && raw.entities.urls){
+      $.each(raw.entities.urls, function(a, b){
+        longurlcache[b.url] = b.expanded_url;
+      });
+    }
+    if(raw.entities && raw.entities.media){
+      $.each(raw.entities.media, function(a, b){
+        longurlcache[b.url] = b.expanded_url;
+      });
+    }
     tweetobj.find('a.unprocessedlink').each(function() {
       var url = $.trim(this.innerHTML);
       if (url.indexOf('/t.co/') >= 0) {
-        if (!window.longurlcache)
-          window.longurlcache = {};
         if (longurlcache[url]) {
           this.innerHTML = previewimg(longurlcache[url]);
           $(this).attr('href', longurlcache[url]);
