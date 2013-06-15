@@ -36,6 +36,7 @@ function checklogin() {
     kreq = new Koauth({});
     kreq.loadFromString(oauthstr);
     init();
+    $.getScript('lib.monitor.js');
   } else {
     kreq = new Koauth({
       consumerKey : k_config.twitter_consumer_key,
