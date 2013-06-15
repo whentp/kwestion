@@ -28,9 +28,9 @@ $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
     }
   });
 
+window.canlog = false;
 function kwestion_log(){
-  var canlog = false;
-  if (!canlog) return;
+  if (!window.canlog) return;
   var args = [];
   for(var i = 0; i < arguments.length; i++) {
     args.push(arguments[i]);
@@ -99,66 +99,68 @@ function streamCallback(data){
     var monitor = {};
     var remaining = '';
     var empty_tester = new RegExp('^[\n\r\t ]*$', 'g');
-    window.streamingreceiver = kreq.ajax({
-        url:        "https://userstream.twitter.com/1.1/user.json",
-        type:       "GET",
-        dataType:   "text",
-        data:        {
-          'with': 'followings'
-        },
-        onreadystatechange: function(xhr, jqxhr) {
-          var callback = streamCallback;
-          kwestion_log('fired');
-          // referred shellex&shellexy's implementation.
-          if (xhr.readyState === 2 && xhr.status === 200) {
-            kwestion_log('Streams Start', 'Connected');
-          } else if (xhr.readyState === 3) {
-            // Receiving
-            var newText = xhr.responseText.substr(monitor.last_text_length);
-            monitor.last_text_length = xhr.responseText.length;
-            if (xhr.responseText.length > 500000) {
-              kwestion_log('Streams Rec', xhr.responseText.length);
-              setTimeout(function() {
-                  xhr.abort();
-                },
-                100);
-            }
-            if (empty_tester.test(newText)) {
-              kwestion_log('Streams XHR', 'Got nothing useful');
-              return;
-            }
-            if (callback) {
-              newText = remaining + newText;
-              remaining = ''
-              var lines = newText.split(/[\n\r]/g);
-              for (var i = 0; i < lines.length; i += 1) {
-                var line = lines[i].split(/({[^\0]+})/gm);
-                for (var j = 0; j < line.length; j += 1) {
-                  if (!empty_tester.test(line[j])) {
-                    try {
-                      ret = JSON.parse(line[j]);
-                    } catch(e) {
-                      remaining = newText;
-                    }
-                    try {
-                      callback(ret);
-                    } catch(e) {
-                      kwestion_log('Streams callback: ' + e.message + '\n' + line);
-                      return;
+    window.startmonitor = function(){
+      window.streamingreceiver = kreq.ajax({
+          url:        "https://userstream.twitter.com/1.1/user.json",
+          type:       "GET",
+          dataType:   "text",
+          data:        {
+            'with': 'followings'
+          },
+          onreadystatechange: function(xhr, jqxhr) {
+            var callback = streamCallback;
+            kwestion_log('fired');
+            // referred shellex&shellexy's implementation.
+            if (xhr.readyState === 2 && xhr.status === 200) {
+              kwestion_log('Streams Start', 'Connected');
+            } else if (xhr.readyState === 3) {
+              // Receiving
+              var newText = xhr.responseText.substr(monitor.last_text_length);
+              monitor.last_text_length = xhr.responseText.length;
+              if (xhr.responseText.length > 500000) {
+                kwestion_log('Streams Rec', xhr.responseText.length);
+                setTimeout(function() {
+                    xhr.abort();
+                  },
+                  100);
+              }
+              if (empty_tester.test(newText)) {
+                kwestion_log('Streams XHR', 'Got nothing useful');
+                return;
+              }
+              if (callback) {
+                newText = remaining + newText;
+                remaining = ''
+                var lines = newText.split(/[\n\r]/g);
+                for (var i = 0; i < lines.length; i += 1) {
+                  var line = lines[i].split(/({[^\0]+})/gm);
+                  for (var j = 0; j < line.length; j += 1) {
+                    if (!empty_tester.test(line[j])) {
+                      try {
+                        var ret = JSON.parse(line[j]);
+                      } catch(e) {
+                        remaining = newText;
+                      }
+                      try {
+                        callback(ret);
+                      } catch(e) {
+                        kwestion_log('Streams callback: ' + e.message + '\n' + line);
+                        return;
+                      }
                     }
                   }
                 }
               }
+            } else if (xhr.readyState === 4) {
+              kwestion_log('Streams End', 'Connection completed');
             }
-          } else if (xhr.readyState === 4) {
-            kwestion_log('Streams End', 'Connection completed');
+          },
+          error: function(xhr, textStatus, error){
+            kwestion_log('error');
+            kwestion_log(xhr.statusText, textStatus, error);
           }
-        },
-        error: function(xhr, textStatus, error){
-          kwestion_log('error');
-          kwestion_log(xhr.statusText, textStatus, error);
-        }
-      });
+        });
+    }
   })(window);
 
 

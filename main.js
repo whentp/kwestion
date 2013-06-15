@@ -35,8 +35,7 @@ function checklogin() {
   if (oauthstr) {
     kreq = new Koauth({});
     kreq.loadFromString(oauthstr);
-    init();
-    $.getScript('lib.monitor.js');
+    init(); 
   } else {
     kreq = new Koauth({
       consumerKey : k_config.twitter_consumer_key,
@@ -98,6 +97,7 @@ function init() {
   KframeResize();
   setTimeout(function() {
     $(window).resize();
+    startmonitor();
   }, 100);
 }
 
