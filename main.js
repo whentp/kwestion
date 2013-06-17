@@ -97,7 +97,7 @@ function init() {
   KframeResize();
   setTimeout(function() {
     $(window).resize();
-    startmonitor();
+    checkmonitor();
   }, 100);
 }
 

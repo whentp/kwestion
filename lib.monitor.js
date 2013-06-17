@@ -2,31 +2,31 @@
 "use strict";
 
 $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
-    // whentp. add the onreadystatechange to jquery.ajax.
-    if ( options.onreadystatechange ) {
-      var xhrFactory = options.xhr;
-      options.xhr = function() {
-        var xhr = xhrFactory.apply( this, arguments );
-        function handler() {
-          options.onreadystatechange( xhr, jqXHR );
-        }
-        if ( xhr.addEventListener ) {
-          xhr.addEventListener( "readystatechange", handler, false );
-        } else {
-          setTimeout( function() {
-              var internal = xhr.onreadystatechange;
-              if ( internal ) {
-                xhr.onreadystatechange = function() {
-                  handler();
-                  internal.apply( this, arguments ); 
-                };
-              }
-            }, 0 );
-        }
-        return xhr;
-      };
-    }
-  });
+  // whentp. add the onreadystatechange to jquery.ajax.
+  if ( options.onreadystatechange ) {
+    var xhrFactory = options.xhr;
+    options.xhr = function() {
+      var xhr = xhrFactory.apply( this, arguments );
+      function handler() {
+        options.onreadystatechange( xhr, jqXHR );
+      }
+      if ( xhr.addEventListener ) {
+        xhr.addEventListener( "readystatechange", handler, false );
+      } else {
+        setTimeout( function() {
+          var internal = xhr.onreadystatechange;
+          if ( internal ) {
+            xhr.onreadystatechange = function() {
+              handler();
+              internal.apply( this, arguments ); 
+            };
+          }
+        }, 0 );
+      }
+      return xhr;
+    };
+  }
+});
 
 window.canlog = false;
 function kwestion_log(){
@@ -96,71 +96,86 @@ function streamCallback(data){
 }
 
 (function(window){
-    var monitor = {};
-    var remaining = '';
-    var empty_tester = new RegExp('^[\n\r\t ]*$', 'g');
-    window.startmonitor = function(){
-      window.streamingreceiver = kreq.ajax({
-          url:        "https://userstream.twitter.com/1.1/user.json",
-          type:       "GET",
-          dataType:   "text",
-          data:        {
-            'with': 'followings'
-          },
-          onreadystatechange: function(xhr, jqxhr) {
-            var callback = streamCallback;
-            kwestion_log('fired');
-            // referred shellex&shellexy's implementation.
-            if (xhr.readyState === 2 && xhr.status === 200) {
-              kwestion_log('Streams Start', 'Connected');
-            } else if (xhr.readyState === 3) {
-              // Receiving
-              var newText = xhr.responseText.substr(monitor.last_text_length);
-              monitor.last_text_length = xhr.responseText.length;
-              if (xhr.responseText.length > 500000) {
-                kwestion_log('Streams Rec', xhr.responseText.length);
-                setTimeout(function() {
-                    xhr.abort();
-                  },
-                  100);
-              }
-              if (empty_tester.test(newText)) {
-                kwestion_log('Streams XHR', 'Got nothing useful');
-                return;
-              }
-              if (callback) {
-                newText = remaining + newText;
-                remaining = ''
-                var lines = newText.split(/[\n\r]/g);
-                for (var i = 0; i < lines.length; i += 1) {
-                  var line = lines[i].split(/({[^\0]+})/gm);
-                  for (var j = 0; j < line.length; j += 1) {
-                    if (!empty_tester.test(line[j])) {
-                      try {
-                        var ret = JSON.parse(line[j]);
-                      } catch(e) {
-                        remaining = newText;
-                      }
-                      try {
-                        callback(ret);
-                      } catch(e) {
-                        kwestion_log('Streams callback: ' + e.message + '\n' + line);
-                        return;
-                      }
-                    }
+  var monitor = {};
+  var remaining = '';
+  var empty_tester = new RegExp('^[\n\r\t ]*$', 'g');
+  window.streamingstate = 0;
+
+  window.checkmonitor = function(){
+    window.startmonitor();
+    setInterval(function(){
+      if (!window.streamingstate){
+        window.startmonitor();
+        kwestion_log('ok. running.');
+      }
+    }, 60000 * 3);
+  };
+
+  window.startmonitor = function(){
+    window.streamingstate = 1;
+    window.streamingreceiver = kreq.ajax({
+      url:        "https://userstream.twitter.com/1.1/user.json",
+      type:       "GET",
+      dataType:   "text",
+      data:        {
+        'with': 'followings'
+      },
+      onreadystatechange: function(xhr, jqxhr) {
+        var callback = streamCallback;
+        kwestion_log('fired');
+        // referred shellex&shellexy's implementation.
+        if (xhr.readyState === 2 && xhr.status === 200) {
+          kwestion_log('Streams Start', 'Connected');
+        } else if (xhr.readyState === 3) {
+          // Receiving
+          var newText = xhr.responseText.substr(monitor.last_text_length);
+          monitor.last_text_length = xhr.responseText.length;
+          if (xhr.responseText.length > 500000) {
+            kwestion_log('Streams Rec', xhr.responseText.length);
+            setTimeout(function() {
+              xhr.abort();
+            },
+            100);
+          }
+          if (empty_tester.test(newText)) {
+            kwestion_log('Streams XHR', 'Got nothing useful');
+            return;
+          }
+          if (callback) {
+            newText = remaining + newText;
+            remaining = ''
+            var lines = newText.split(/[\n\r]/g);
+            for (var i = 0; i < lines.length; i += 1) {
+              var line = lines[i].split(/({[^\0]+})/gm);
+              for (var j = 0; j < line.length; j += 1) {
+                if (!empty_tester.test(line[j])) {
+                  try {
+                    var ret = JSON.parse(line[j]);
+                  } catch(e) {
+                    remaining = newText;
+                  }
+                  try {
+                    callback(ret);
+                  } catch(e) {
+                    kwestion_log('Streams callback: ' + e.message + '\n' + line);
+                    return;
                   }
                 }
               }
-            } else if (xhr.readyState === 4) {
-              kwestion_log('Streams End', 'Connection completed');
             }
-          },
-          error: function(xhr, textStatus, error){
-            kwestion_log('error');
-            kwestion_log(xhr.statusText, textStatus, error);
           }
-        });
-    }
-  })(window);
+        } else if (xhr.readyState === 4) {
+          kwestion_log('Streams End', 'Connection completed');
+          window.streamingstate = 0;
+        }
+      },
+      error: function(xhr, textStatus, error){
+        kwestion_log('error');
+        kwestion_log(xhr.statusText, textStatus, error);
+        window.streamingstate = 0;
+      }
+    });
+  }
+})(window);
 
 
